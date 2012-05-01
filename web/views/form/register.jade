@@ -1,0 +1,27 @@
+form(class="form-horizontal well",name="register",method="post",action="/user/register")
+  fieldset
+    legend Register new account
+
+    div.control-group
+      label.control-label E-mail:
+      div.controls
+        input(type="text",name="email",class="input",value="#{ (registerErrors && registerErrors.email) ? registerErrors.email.value : '' }")
+        p.help-block
+        | Only used for contacting
+
+     div.control-group
+      label.control-label Password:
+      div.controls
+        input(type="password",name="password",class="input",value="")
+        p.help-block 
+        | At least 6 letters [a-zA-Z0-9]
+
+    div.control-group
+      label.control-label Password 2x:
+      div.controls
+        input(type="password",name="password2x",class="input",value="")
+        p.help-block 
+        | Repeat password        
+
+    div.form-actions
+      input(type="submit",value="Register",name="register",class="btn btn-info btn-large")

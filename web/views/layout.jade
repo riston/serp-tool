@@ -1,0 +1,54 @@
+!!! 5
+html
+  head
+    title #{title} - SERP tool
+    link(rel='stylesheet', href='/plugins/bootstrap/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/plugins/kalendae/kalendae.css')
+
+    script(type='text/javascript',src='/javascripts/jquery-1.7.2.min.js')
+    script(type='text/javascript',src='/javascripts/highcharts.js')
+    
+  body
+    div.navbar.navbar-fixed-top
+      div.navbar-inner
+        div.container
+          a(class="btn btn-navbar",data-toggle="collapse",data-target=".nav-collapse")
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a(class="brand",href="/") SERP tool
+          div.nav-collapse
+            ul.nav
+              li.active
+                a(href="/") Home
+              - if (user)
+                ul.nav
+                  li.dropdown
+                    a(href="#",class="dropdown-toggle",data-toggle="dropdown") Serp 
+                      b.caret
+                    ul.dropdown-menu
+                      li
+                        a(href="/serp") Job list
+                      li 
+                        a(href='/serp/new') New job
+
+            p.navbar-text.pull-right
+              - if (user)
+                  span Logged in as 
+                  a(href="/user/logout") #{user.email}
+              - else
+                a(href="/") Login user
+    
+    div.container
+        div!= partial('alert', flash)   
+        != body 
+
+      hr
+      footer
+        p Made by Risto Novik &copy; #{new Date().getFullYear()}
+
+  script(type='text/javascript',src='/plugins/kalendae/kalendae.min.js')
+  script(type='text/javascript',src='/javascripts/moment.min.js')
+  script(type='text/javascript',src='/javascripts/bootstrap-dropdown.js')
+  script(type='text/javascript',src='/javascripts/main.js')

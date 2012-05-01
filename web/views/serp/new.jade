@@ -1,0 +1,54 @@
+h2 Adding new job
+
+div
+  p Creating new job which will be added into database for execution
+
+form(class="form-horizontal",name="add-job",method="post",action="/serp/add-job")
+  fieldset
+    div.control-group
+      label.control-label Job name:
+      div.controls
+        input(type="text",name="name",class="span4")
+
+    div.control-group
+      label.control-label Start date:
+      div.controls
+        input(type="text",name="startDate",class="input span2 auto-kal")
+
+    div.control-group
+      label.control-label Time:
+      div.controls
+        input(type="text",name="startTime",class="input span2")
+        p.help-block Use time format HH:MM
+
+    div.control-group
+      label.control-label Repeat every:
+      div.controls
+        select(class='span2',name='repeat')
+          option no-repeat
+          option day
+          option week
+          option month
+
+    div.control-group
+      label.control-label Sources:
+      div.controls
+        select(class='span2',name='sources',multiple='multiple')
+          option google
+          option neti.ee
+          option yahoo
+          option duckduckgo
+        p.help-block Source where to look for result pages, to choose multiple items use CTRl+ left click.
+
+    div.control-group
+      label.control-label Keywords:
+      div.controls
+        textarea(class='span4',rows='4',name='keywords')
+
+    div.control-group
+      label.control-label URL-s:
+      div.controls
+        textarea(class='span4',rows='4',name='urls')
+
+    div.form-actions
+      input(type="submit",value="Add job",name="add-job",class="btn btn-primary btn-medium")

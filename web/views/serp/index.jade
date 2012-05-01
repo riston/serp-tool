@@ -1,0 +1,46 @@
+h2 Welcome to our serp tool page
+
+mixin showStatus(status)
+  - if (status == 'waiting')
+    span.label
+      i.icon-time 
+      &nbsp; #{status}
+
+  - else if (status == 'finished')
+    span.label.label-success
+      i.icon-flag
+      &nbsp; #{status}
+
+  - else if (status == 'queued')
+    span.label.label-info
+      i.icon-repeat
+      &nbsp; #{status}    
+  - else 
+    #{status}
+
+table.table
+  thead
+    tr
+      th #
+      th Job name
+      th Start
+      th Added
+      th Status
+      th Action
+  tbody
+  for job, key in jobs
+    tr
+      td #{key + 1}
+      td 
+        a(href='/serp/view/#{job._id}') #{job.name}
+      td #{moment(job.start).format('LLL')}
+      td #{moment(job.added).format('LLL')}
+      td 
+        mixin showStatus(job.status)
+      td
+        a(href="/serp/delete/#{job._id}")
+          i.icon-trash
+        &nbsp;
+        a(href="/serp/edit/#{job._id}")
+          i.icon-pencil
+        &nbsp;

@@ -1,0 +1,154 @@
+script(type='text/javascript')
+  var optionsColumn = {
+    chart: {
+        renderTo: 'job-chart',
+        type: 'column',
+        plotBorderWidth: 1
+    },
+    title: { },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Keyword position'
+        }
+    },
+    xAxis: { },
+    legend: {
+        layout: 'vertical',
+        backgroundColor: '#FFFFFF',
+        align: 'left',
+        verticalAlign: 'top',
+        x: 100,
+        y: 70,
+        floating: true,
+        shadow: true
+    },
+    tooltip: {
+        formatter: function() {
+            return this.x +': '+ this.y;
+        }
+    },
+    plotOptions: {
+        column: {
+            pointPadding: 0.2,
+            borderWidth: 0
+        }
+    },
+  };
+
+  var optionsGroupd = {
+    chart: {
+      renderTo: 'job-total-chart',
+      type: 'column',
+      plotBorderWidth: 1
+    },
+    title: { },
+    xAxis: { },
+    yAxis: {
+      allowDecimals: false,
+      min: 0,
+      title: {
+        text: 'Total position'
+      }
+    },
+    legend: {
+      enabled: false
+    },
+    tooltip: {
+      formatter: function() {
+        var name = this.series.name.split(' - ');
+        return '<b>'+ name[1] +'</b><br/>'+
+          name[0] +': '+ this.y +'<br/>'+
+          'Total: '+ this.point.stackTotal;
+      }
+    },
+    plotOptions: {
+      column: {
+        stacking: 'normal'
+      }
+    },
+    series: []
+  };
+
+  function addSelectItems(items) {
+    items.forEach(function(item, index) {
+      $item = $('<li>', {
+        class: (index == 0) ? 'active' : ''  
+      }).append($('<a>', {
+          text: item
+        , href: '#' + item
+      }));
+
+      $('ul#match').append($item);
+    });
+  }
+
+  function getStats(jobid, options, selectItem) {
+    $.get('/serp/stats/' + jobid, function(result) {
+      console.log(result);
+      var keys = Object.keys(result)
+        , currentKey = keys[0];
+      
+      if (selectItem != undefined) currentKey = selectItem;
+      else addSelectItems(keys);
+      
+      options.title.text        = currentKey;
+      options.xAxis.categories  = result[currentKey].categories;
+      options.series            = result[currentKey].series;
+
+      chart = new Highcharts.Chart(options);
+    });  
+  }
+
+  function getOverallStats(jobid, options) {
+    $.get('/serp/stats/overall/' + jobid, function(result) {
+      console.log(result);
+
+      options.title.text        = "Overall job stats";
+      options.xAxis.categories  = result.categories;
+      options.series            = result.series;
+      chart = new Highcharts.Chart(options);
+      getOverallStatsTable(result);
+    });     
+  }
+
+  function getOverallStatsTable(results) {
+    results.categories.forEach(function(categorie) {
+      $h3 = $('<h4>', { text: categorie });
+      $table = $('<div>');
+      $table.append($h3);
+      $('#overall-table').append($table);
+    });
+
+  }
+
+  $(document).ready(function() {
+    $('ul#match').on('click', 'li', function(e) {
+      $(this).parent().find('.active').removeClass('active');
+      $(this).addClass('active');
+      
+      var select = $(this).find('a').text();
+      getStats('#{job._id}', optionsColumn, select);
+    });
+
+    getOverallStats('#{job._id}', optionsGroupd);
+
+    getStats('#{job._id}', optionsColumn, undefined);
+  });
+
+h1 View of job "#{job.name}"
+
+div
+  h3 View of overall stats
+  div(id="job-total-chart",style="margin: 0 auto; height: 300px")
+
+div#overall-table
+hr
+
+div.row
+  div.span3
+    h3 Matching item:
+    ul.nav.nav-pills.nav-stacked#match
+
+  div.span9
+    div(id="job-chart",style="margin: 0 auto; height: 300px")

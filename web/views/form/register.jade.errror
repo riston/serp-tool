@@ -1,0 +1,36 @@
+form(class="form-horizontal well",name="register",method="post",action="/user/register")
+  fieldset
+    legend Register new account
+
+    div(class='control-group #{ (registerErrors && registerErrors.email) ? ' error' : ''}')
+      label.control-label E-mail:
+      div.controls
+        input(type="text",name="email",class="input",value="#{ (registerErrors && registerErrors.email) ? registerErrors.email.value : '' }")
+        p.help-block
+          - if (registerErrors && registerErrors.email)
+            |  #{registerErrors.email.msg}  
+          - else
+            | Only used for contacting
+
+     div(class='control-group #{ (registerErrors && registerErrors.password) ? ' error' : ''}')
+      label.control-label Password:
+      div.controls
+        icnput(type="password",name="password",class="input",value="#{ (registerErrors && registerErrors.password) ? registerErrors.password.value : '' }")
+        p.help-block 
+          - if (registerErrors && registerErrors.password)
+            |  #{registerErrors.password.msg}
+          - else
+            | At least 6 characters long
+
+    div(class='control-group #{ (registerErrors && registerErrors.password) ? ' error' : ''}')
+      label.control-label Password 2x:
+      div.controls
+        input(type="password",name="password2x",class="input",value="#{ (registerErrors && registerErrors.password2x) ? registerErrors.password2x.value : '' }")
+        p.help-block 
+          - if (registerErrors && registerErrors.password2x)
+            | #{registerErrors.password2x.msg}
+          - else
+            | Repeat password        
+
+    div.form-actions
+      input(type="submit",value="Register",name="register",class="btn btn-info btn-large")

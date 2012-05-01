@@ -1,0 +1,6 @@
+To download the search pages, you must specify the user-agent paramater.
+wget -U "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0)" http://www.google.com/search?q=eesti -O google-result.htm
+
+
+Neti.ee
+wget -U "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0)" http://www.neti.ee/cgi-bin/otsing?query=eesti&src=web&alates=0 -O neti-result.htm

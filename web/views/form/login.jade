@@ -1,0 +1,16 @@
+form(class="form-horizontal well",name="login",method="post",action="/user/login")
+  fieldset
+    legend Already have account, sign in
+
+    div.control-group
+      label.control-label E-mail:
+      div.controls
+        input(type="text",name="email",class="input")
+
+    div.control-group
+      label.control-label Password:
+      div.controls
+        input(type="password",name="password",class="input")
+
+    div.form-actions
+      input(type="submit",value="Sign in",name="login",class="btn btn-primary btn-large")
