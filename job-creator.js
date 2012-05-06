@@ -1,8 +1,8 @@
-var kue = require('kue')
-  , DB = require(__dirname + '/web/database.js')
-  , cron = require('cron')
-  , jobs = kue.createQueue()
-  , Job = kue.Job;
+var kue     = require('kue')
+  , DB      = require(__dirname + '/web/database.js')
+  , cron    = require('cron')
+  , jobs    = kue.createQueue()
+  , Job     = kue.Job;
 
 var cronRunTime = '*/10 * * * *';
 
