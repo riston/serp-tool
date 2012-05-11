@@ -25,10 +25,11 @@ exports.checkJobId = function(req, res, next, id) {
 };
 
 exports.index = function(req, res) {
-	db.job.userJobList(req.session.user._id, function(err, dataJobs) {
+	db.job.userJobListGroupByName(req.session.user._id, function(err, dataJobs) {
 		if (err) dataJobs = {};
 		res.render('serp/index.jade', {
 			title: 'Home'
+		  , jobNames: Object.keys(dataJobs)
 		  , jobs: dataJobs
 		});		
 	})
@@ -58,7 +59,7 @@ exports.doDelete = function(req, res) {
 };
 
 exports.jobLineStats = function(req, res) {
-	db.keyword.getGroupedByMatchSet(req.params.jobid, function(err, stats) {
+	db.keyword.getGroupTotals(req.params.jobid, function(err, stats) {
 		res.json((err) ? { code: 400, err: 'Check again the data', } : stats);
 	});
 };

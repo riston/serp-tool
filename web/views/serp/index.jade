@@ -18,29 +18,49 @@ mixin showStatus(status)
   - else 
     #{status}
 
-table.table
-  thead
-    tr
-      th #
-      th Job name
-      th Start
-      th Added
-      th Status
-      th Action
-  tbody
-  for job, key in jobs
-    tr
-      td #{key + 1}
-      td 
-        a(href='/serp/view/#{job._id}') #{job.name}
-      td #{moment(job.start).format('LLL')}
-      td #{moment(job.added).format('LLL')}
-      td 
-        mixin showStatus(job.status)
-      td
-        a(href="/serp/delete/#{job._id}")
-          i.icon-trash
-        &nbsp;
-        a(href="/serp/edit/#{job._id}")
-          i.icon-pencil
-        &nbsp;
+mixin showTable(jobName)
+  div.row
+    div.span3.pull-left
+      p
+        strong Jobs in list: #{jobs[jobName].length}
+    div.pull-right
+      a(class='btn btn-small btn-info',href='#{jobs[jobName].length > 0 ? '/serp/stats/all/' + jobs[jobName][0]._id : '#'}') 
+        i.icon-info-sign.icon-white
+        |  Overall
+
+  table.table
+    thead
+      tr
+        th #
+        th Start
+        th Added
+        th Status
+        th Action
+    tbody
+    for job, key in jobs[jobName]
+      tr
+        td #{key + 1}
+        td #{moment(job.start).format('LLL')}
+        td #{moment(job.added).format('LLL')}
+        td 
+          mixin showStatus(job.status)
+        td
+          a(href="/serp/delete/#{job._id}",title='Delete')
+            i.icon-trash
+          &nbsp;
+          a(href="/serp/edit/#{job._id}",title='Edit')
+            i.icon-pencil
+          &nbsp;
+          a(href="/serp/view/#{job._id}",title='View')
+            i.icon-eye-open
+
+
+div.accordion#name-accordion
+  for name, key in jobNames
+    div.accordion-group
+      div.accordion-heading
+         a(class='accordion-toggle',data-toggle='collapse',data-parent='#name-accordion',href="##{key}") #{name}
+      div(id='#{key}',class='accordion-body collapse',style='height: 0px')
+        div.accordion-inner
+          mixin showTable(name)
+

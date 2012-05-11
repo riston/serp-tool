@@ -1,5 +1,6 @@
 var db        = require(__dirname + '/config.js').db
   , job       = db.collection('job')
+  , _         = require('underscore')
   , moment    = require('moment');
 
 var JobService = {
@@ -78,6 +79,19 @@ var JobService = {
     job.find({ owner: _id }).sort( { added: -1 }).toArray(function(err, jobs) {
       if (err) cb(err);
       else cb(null, jobs);
+    });
+  },
+
+  userJobListGroupByName: function(userId, cb) {
+    this.userJobList(userId, function(err, jobs) {
+      if (err) return cb(err);
+      else {
+        return cb(null, 
+          _.groupBy(jobs, function(job) {
+            return job.name;
+          })
+        );
+      }
     });
   },
 

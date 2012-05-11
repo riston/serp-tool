@@ -84,6 +84,47 @@ var KeywordService = {
     });
   },
 
+  getGroupTotals: function(jobid, cb) {
+    var self = this;
+    self.groupStats(jobid, function(err, results) {
+      self.getJobKeywords(jobid, function(err, keywords) {
+        var groupedByEngine = _.groupBy(results, function(elem) {
+          return elem.engine;
+        });
+
+        var newDataSet = {};
+        Object.keys(groupedByEngine).forEach(function(engine) {
+          if (newDataSet[engine] == undefined) newDataSet[engine] = {};
+          newDataSet[engine].series = [];
+          newDataSet[engine].categories = keywords;
+
+          // Get the results grouped by group names
+          var grouped = _.groupBy(groupedByEngine[engine], function(elem) {
+            return elem.group;
+          });
+          Object.keys(grouped).forEach(function(group) {
+            var item = { name: group, data: [] };
+            // Go through all the keywords related to group
+            keywords.forEach(function(keyword) {
+              var filterByKeywords = _.filter(grouped[group], function(elem) {
+                return elem.keyword == keyword;
+              });
+              filterByKeywords = _.pluck(filterByKeywords, 'position');
+
+              var result = _.reduce(filterByKeywords, function(memo, result) {
+                return memo + parseInt(result, 10);
+              }, 0);
+              item.data.push(result);
+            });
+            newDataSet[engine].series.push(item);
+          });
+
+        });
+        return cb(null, newDataSet);
+      });
+    });
+  },
+
   getGroupedByMatchSet: function(jobid, cb) {
     var self = this;
 
@@ -120,45 +161,6 @@ var KeywordService = {
           return cb(null, resultSet);
         });  
       });
-    });
-  },
-
-  /**
-   * Deprecated as new stats collection tools has been added.
-   */
-  stats: function(jobid, cb) {
-    var _id = db.ObjectID.createFromHexString(jobid)
-      , self = this;
-
-    db.collection('job').findById(jobid, function(err, job) {
-      keyword.find({ job: job._id }).toArray(function(err, keywords) {
-        if (err) cb(err);
-        else {
-          var dataSet = [];
-          // Go through the all keyword objects
-          async.forEach(keywords, function(keyword, cb) {
-            job.urls.forEach(function(url) {
-
-              var findResult = _.find(keyword.results, function(result) {
-                return self.hasMatch(url, result);
-              });
-              var keywordData = {
-                keyword:    keyword.keyword, 
-                engine:     keyword.source, 
-                match:      url,
-                url:        findResult == undefined ? '' : findResult.href, 
-                position:   findResult == undefined ? 0 : findResult.index
-
-              };
-              dataSet.push(keywordData);  
-              
-            });
-            cb(null, keyword);                      
-          }, function(err) {
-            return cb(null, dataSet);
-          });
-        }
-      });  
     });
   },
 

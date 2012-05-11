@@ -39,8 +39,8 @@ script(type='text/javascript')
 
   var lineChartOptions = {
     chart: {
-        renderTo: 'job-line-chart',
-        type: 'spline',
+        renderTo: 'job-chart-line',
+        type: 'column',
         plotBorderWidth: 1
     },
     title: { },
@@ -48,7 +48,7 @@ script(type='text/javascript')
     yAxis: {
         min: 0,
         title: {
-            text: 'Total position'
+            text: 'Keyword position'
         }
     },
     xAxis: { },
@@ -57,14 +57,13 @@ script(type='text/javascript')
         backgroundColor: '#FFFFFF',
         align: 'center',
         verticalAlign: 'bottom',
-        x: 100,
-        y: 70,
-        floating: true,
+        //floating: true,
         shadow: true
     },
     tooltip: {
-        crosshairs: true,
-        shared: true
+        formatter: function() {
+            return this.x +': '+ this.y;
+        }
     },
     plotOptions: {
       column: {
@@ -167,45 +166,166 @@ script(type='text/javascript')
     });
   }
 
-  function addListControl() {
+  function addListControl(options) {
     $('ul#match').on('click', 'li', function(e) {
       $(this).parent().find('.active').removeClass('active');
       $(this).addClass('active');
       
       var select = $(this).find('a').text();
-      getStats('#{job._id}', optionsColumn, select);
+      getStats('#{job._id}', options, select);
     });
   }
 
+  var listItemSelect = {
+    options: {},
+    self: this,
+
+    renderList: function(items) {
+      var self = this;
+      items.forEach(function(item, index) {
+        $item = $('<li>', {
+          class: (index == 0) ? 'active' : ''  
+        }).append($('<a>', {
+            text: item
+          , href: '#' + item
+        }));
+
+        self.options.list.append($item);
+      });
+    },
+
+    loadChart: function(selectedKey, cb) {
+      var self = this;
+      this.loadData(function(err, result) {
+        if (selectedKey == null) selectedKey = Object.keys(result)[0];
+
+        self.options.chartOptions.title.text       = selectedKey;
+        self.options.chartOptions.xAxis.categories = result[selectedKey].categories;
+        self.options.chartOptions.series           = result[selectedKey].series;
+
+        chart = new Highcharts.Chart(self.options.chartOptions);  
+        return cb(null, result);
+      })
+    },
+
+    addListItemClickListener: function() {
+      var self = this;
+      this.options.list.on('click', 'li', function(e) {
+        $(this).parent().find('.active').removeClass('active');
+        $(this).addClass('active');
+        
+        var select = $(this).find('a').text();
+        self.loadChartWihtoutSidebar(select);
+      });
+    },
+
+    loadChartWihtoutSidebar: function(selected) {
+      var self = this;
+      self.loadChart(selected, function(err, result) { });
+    },
+
+    loadChartWithItems: function() {
+      var self = this;
+      self.loadChart(null, function(err, result) {
+        // Get the list items
+        var itemNames = Object.keys(result);
+        self.renderList(itemNames);
+        self.addListItemClickListener();
+      });
+
+
+    },
+
+    loadData: function(cb) {
+      var self = this;
+      $.get(this.options.url, function(result) {
+        return cb(null, result);
+      });
+    },
+
+    init: function(options, loadItemData) {
+      this.options = options;
+      if (loadItemData) 
+        this.loadChartWithItems();
+
+    }
+  };
+
   $(document).ready(function() {
-    
-    addListControl();
-    getLineStats('#{job._id}', lineChartOptions);
-    getOverallStats('#{job._id}', optionsGroupd);
-    getStats('#{job._id}', optionsColumn, undefined);
+    var totalChartOptions = {
+        chartOptions: lineChartOptions
+      , url: '/serp/stats/line/#{job._id}'
+      , list: $('#total-match')
+    };
+    listItemSelect.init(totalChartOptions, true);
+    //listItemSelect.loadChartWithItems();
+
+    //getLineStats('#{job._id}', lineChartOptions);
+
+    // Load data only when the tab is selected
+    $('a[data-toggle="tab"]').on('shown', function(e) {
+      function isChartLoaded(container) {
+        return $('#' + container).find('.highcharts-container').length ? true : false;
+      }
+
+      switch ($(e.target).attr('href')) {
+        case '#total':
+          if (!isChartLoaded(lineChartOptions.chart.renderTo)) {
+            //listItemSelect.init(totalChartOptions);
+          }
+        break;
+
+        case '#grouped':
+          if (!isChartLoaded(optionsGroupd.chart.renderTo))
+            getOverallStats('#{job._id}', optionsGroupd);
+        break;
+
+        case '#match':
+          if (!isChartLoaded(optionsColumn.chart.renderTo)) {
+            getStats('#{job._id}', optionsColumn, undefined);
+            addListControl(optionsColumn);
+          }
+        break;
+
+        default:
+
+      }
+    });
   });
 
 h1 View of job "#{job.name}"
 br
 
-div
-  h3 Keywords total line chart
-  div(id="job-line-chart",style="margin: 0 auto; height: 300px")
+div.tabbable
+  ul.nav.nav-tabs
+    li.active
+      a(href='#total',data-toggle='tab') Total
+    li
+      a(href='#grouped',data-toggle='tab') Grouped stats
+    li
+      a(href='#match',data-toggle='tab') Matched stats
 
-div
-  h3 View of overall stats
-  div(id="job-total-chart",style="margin: 0 auto; height: 300px")
+  div.tab-content
+    div.tab-pane.active#total
+      h3 Keywords total line chart
+      div.row
+        br
+        div.span3
+          h3 Matching item:
+          ul.nav.nav-pills.nav-stacked#total-match
+        div.span9
+          div(id="job-chart-line")
 
-div#overall-table
-hr
+    div.tab-pane#grouped
+      h3 View of overall stats
+      div(class='span12',id="job-total-chart")
 
-div.row
-  h3 View of each matching url
-  br
-
-  div.span3
-    h3 Matching item:
-    ul.nav.nav-pills.nav-stacked#match
-
-  div.span9
-    div(id="job-chart",style="margin: 0 auto; height: 300px")
+    div.tab-pane#match
+      h3 Each matched item stats
+      div.row
+        br
+        div.span3
+          h3 Matching item:
+          ul.nav.nav-pills.nav-stacked#match
+        div.span9
+          div(id="job-chart")

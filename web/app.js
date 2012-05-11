@@ -3,11 +3,11 @@
  * Module dependencies.
  */
 
-var express = require('express')
-  , routes = require('./routes')
-  , expressValidator = require('express-validator')
-  , DB = require(__dirname + '/database.js')
-  , moment = require('moment');
+var express             = require('express')
+  , routes              = require('./routes')
+  , expressValidator    = require('express-validator')
+  , DB                  = require(__dirname + '/database.js')
+  , moment              = require('moment');
 
 var app = module.exports = express.createServer();
 
