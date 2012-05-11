@@ -1,5 +1,4 @@
-var util = require('util')
-  , DB = require(__dirname + '/../database.js');
+var DB = require(__dirname + '/../database.js');
 
 exports.register = function(req, res) {
   assertRegister(req);

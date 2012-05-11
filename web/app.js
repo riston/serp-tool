@@ -72,6 +72,7 @@ app.get('/serp/stats/line/:jobid', routes.isUser, routes.serp.jobLineStats);
 
 app.post('/serp/edit', routes.isUser, routes.serp.doEdit);
 app.post('/serp/add-job', routes.isUser, routes.serp.addJob);
+app.post('/serp/delete-all', routes.isUser, routes.serp.doDeleteAll);
 
 app.listen(3000, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);

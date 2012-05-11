@@ -1,7 +1,6 @@
 var db        = require(__dirname + '/config.js').db
   , keyword   = db.collection('keyword')
   , async     = require('async')
-  , util      = require('util')
   , _         = require('underscore');
 
 var KeywordService = {

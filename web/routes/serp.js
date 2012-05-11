@@ -58,6 +58,14 @@ exports.doDelete = function(req, res) {
 	//if (req.body.)
 };
 
+exports.doDeleteAll = function(req, res) {
+	console.log(req.body.jobid);
+	db.job.deleteAll(req.body.jobid, function(err, done) {
+		res.json((err) ? { code: 400, err: 'Deleting failed, something is wrong!', } 
+			: { code: 400, err: 'Deleted the job!', });
+	});
+};
+
 exports.jobLineStats = function(req, res) {
 	db.keyword.getGroupTotals(req.params.jobid, function(err, stats) {
 		res.json((err) ? { code: 400, err: 'Check again the data', } : stats);

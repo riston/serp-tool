@@ -116,6 +116,21 @@ var JobService = {
     });
   },
 
+  deleteAll: function(jobId, cb) {
+    id = db.ObjectID.createFromHexString(jobId);
+    job.remove( { $or: [ { _id: id }, { parent: id } ] }, function(err) {
+      if (err) return cb(err);
+      else {
+        db.collection('keyword').remove( { job: id }, function(err) {
+          if (err) return cb(err);
+          else {
+            return cb(null, true);
+          }
+        });
+      }
+    });
+  },
+
   updateJobStatus: function(id, newStatus, cb) {
     job.update({ _id: id }, { $set: { status: newStatus } }, function(err, job) {
       if (err) cb(err);

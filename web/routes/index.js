@@ -1,4 +1,3 @@
-
 exports.user = require('./user');
 exports.serp = require('./serp');
 

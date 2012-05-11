@@ -24,6 +24,10 @@ mixin showTable(jobName)
       p
         strong Jobs in list: #{jobs[jobName].length}
     div.pull-right
+      button(class='btn btn-small btn-danger delete-all',data-jobid='#{jobs[jobName].length > 0 ? jobs[jobName][0]._id : '#'}') 
+        i.icon-trash.icon-white
+        |  Delete all jobs
+      &nbsp;
       a(class='btn btn-small btn-info',href='#{jobs[jobName].length > 0 ? '/serp/stats/all/' + jobs[jobName][0]._id : '#'}') 
         i.icon-info-sign.icon-white
         |  Overall
@@ -54,7 +58,6 @@ mixin showTable(jobName)
           a(href="/serp/view/#{job._id}",title='View')
             i.icon-eye-open
 
-
 div.accordion#name-accordion
   for name, key in jobNames
     div.accordion-group
@@ -64,3 +67,12 @@ div.accordion#name-accordion
         div.accordion-inner
           mixin showTable(name)
 
+script(id='errorTpl',type="text/x-jquery-tmpl")
+  div.alert.alert-block.alert-error.fade.in
+    button(class='close',data-dismiss='alert') &times;
+    h4.alert-heading Are you sure that you want to delete the job and all its sub jobs?
+    p
+      button(class='btn btn-danger') Delete
+
+script(type='text/javascript',src='/javascripts/list-page.js')
+script(type='text/javascript',src='/javascripts/jquery.tmpl.min.js')

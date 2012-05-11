@@ -14,6 +14,7 @@ var JobCreator = {
   addNew: function() {
     DB.job.findJobToProcess(function(err, dataJobs) {
       if (!err) {
+        console.log(dataJobs);
         dataJobs.forEach(function(job) {
           var current = jobs.create('serp', {
               title: job.name
@@ -35,4 +36,4 @@ var JobCreator = {
 }
 
 // Web interface for the kue
-//kue.app.listen(3000);
+kue.app.listen(3030);
