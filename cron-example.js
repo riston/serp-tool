@@ -1,12 +1,44 @@
-
+var _ 			= require('underscore');
 var async 		= require('async');
 var Scrape 		= require(__dirname + '/scraper/scrape.js');
 var db			= require(__dirname + '/web/database.js');
 
-
-db.keyword.groupByMatch('4f9bf9f2a1aacdaa3d000004', function(err, results) {
+//http://localhost:3000/serp/view/
+/*
+db.keyword.totalStats('4faa2cf24f9c874f0b000001', function(err, results) {
+	console.dir(results['www.ttu.ee'].series);
+});
+*/
+db.keyword.getGroupedByMatchSet('4faa2cf24f9c874f0b000001', function(err, results) {
+	console.dir(results);
+	console.dir(results.series);
+});
+/*
+db.keyword.getUniqueGroupNames('4faa2cf24f9c874f0b000001', function(err, results) {
 	console.log(results);
 });
+*/
+/*
+db.keyword.getGroupedByMatchSet('4faa2cf24f9c874f0b000001', function(err, results) {
+	console.log(results);
+	console.log(results.series[0].data);
+});
+*/
+/*
+db.keyword.totalStats('4faa2cf24f9c874f0b000001', function(err, results) {
+	console.log(results['www.ttu.ee'].series);
+	//console.log(_.filter(results, function(result) { return result.engine == 'neti.ee' }));
+});
+*/
+/*
+db.keyword.groupStats('4faa2cf24f9c874f0b000001', function(err, results) {
+	console.log(_.filter(results, function(result) { return result.engine == 'neti.ee' }));
+});
+
+db.keyword.groupByMatch('4faa2cf24f9c874f0b000001', function(err, results) {
+	console.log(results);
+});
+*/
 // db.keyword.find( { _id: ObjectId('4f9457a3bdb.keyword.find( { _id: ObjectId('4f9457a3b65babf521000001')})65babf521000001')})
 /*
 db.keyword.totalStats('4f9bf9f2a1aacdaa3d000004', function(err, results) {

@@ -6,6 +6,7 @@ script(type='text/javascript')
         plotBorderWidth: 1
     },
     title: { },
+    subtitle: { },
     yAxis: {
         min: 0,
         title: {
@@ -29,10 +30,47 @@ script(type='text/javascript')
         }
     },
     plotOptions: {
-        column: {
-            pointPadding: 0.2,
-            borderWidth: 0
+      column: {
+          pointPadding: 0.2,
+          borderWidth: 0
+      }
+    },
+  };
+
+  var lineChartOptions = {
+    chart: {
+        renderTo: 'job-line-chart',
+        type: 'spline',
+        plotBorderWidth: 1
+    },
+    title: { },
+    subtitle: { },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Total position'
         }
+    },
+    xAxis: { },
+    legend: {
+        layout: 'vertical',
+        backgroundColor: '#FFFFFF',
+        align: 'center',
+        verticalAlign: 'bottom',
+        x: 100,
+        y: 70,
+        floating: true,
+        shadow: true
+    },
+    tooltip: {
+        crosshairs: true,
+        shared: true
+    },
+    plotOptions: {
+      column: {
+          pointPadding: 0.2,
+          borderWidth: 0
+      }
     },
   };
 
@@ -83,9 +121,18 @@ script(type='text/javascript')
     });
   }
 
+  function getLineStats(jobid, options) {
+    $.get('/serp/stats/line/' + jobid, function(result) {
+      options.title.text        = 'Total position diagram';
+      options.xAxis.categories  = result.categories;
+      options.series            = result.series;
+  
+      chart = new Highcharts.Chart(options);      
+    });
+  }
+
   function getStats(jobid, options, selectItem) {
     $.get('/serp/stats/' + jobid, function(result) {
-      console.log(result);
       var keys = Object.keys(result)
         , currentKey = keys[0];
       
@@ -93,6 +140,7 @@ script(type='text/javascript')
       else addSelectItems(keys);
       
       options.title.text        = currentKey;
+      options.subtitle.text     = result[currentKey].group;
       options.xAxis.categories  = result[currentKey].categories;
       options.series            = result[currentKey].series;
 
@@ -102,8 +150,6 @@ script(type='text/javascript')
 
   function getOverallStats(jobid, options) {
     $.get('/serp/stats/overall/' + jobid, function(result) {
-      console.log(result);
-
       options.title.text        = "Overall job stats";
       options.xAxis.categories  = result.categories;
       options.series            = result.series;
@@ -119,10 +165,9 @@ script(type='text/javascript')
       $table.append($h3);
       $('#overall-table').append($table);
     });
-
   }
 
-  $(document).ready(function() {
+  function addListControl() {
     $('ul#match').on('click', 'li', function(e) {
       $(this).parent().find('.active').removeClass('active');
       $(this).addClass('active');
@@ -130,13 +175,22 @@ script(type='text/javascript')
       var select = $(this).find('a').text();
       getStats('#{job._id}', optionsColumn, select);
     });
+  }
 
+  $(document).ready(function() {
+    
+    addListControl();
+    getLineStats('#{job._id}', lineChartOptions);
     getOverallStats('#{job._id}', optionsGroupd);
-
     getStats('#{job._id}', optionsColumn, undefined);
   });
 
 h1 View of job "#{job.name}"
+br
+
+div
+  h3 Keywords total line chart
+  div(id="job-line-chart",style="margin: 0 auto; height: 300px")
 
 div
   h3 View of overall stats
@@ -146,6 +200,9 @@ div#overall-table
 hr
 
 div.row
+  h3 View of each matching url
+  br
+
   div.span3
     h3 Matching item:
     ul.nav.nav-pills.nav-stacked#match

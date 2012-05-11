@@ -5,6 +5,8 @@ p
     fieldset
       legend Are you sure to delete the job ?
       
-      button(type='submit',class='btn-large btn-danger') Delete
-      button(type='submit',class='btn-large btn-info') Cancel
-      input(type="hidden",name='jobId',value='#{id}')
+      div.form-actions
+        button(type='submit',class='btn-large btn-danger') Delete
+        
+        button(type='submit',class='btn-large btn-info') Cancel
+        input(type="hidden",name='jobId',value='#{id}')

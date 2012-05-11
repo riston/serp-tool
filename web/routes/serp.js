@@ -57,23 +57,23 @@ exports.doDelete = function(req, res) {
 	//if (req.body.)
 };
 
+exports.jobLineStats = function(req, res) {
+	db.keyword.getGroupedByMatchSet(req.params.jobid, function(err, stats) {
+		res.json((err) ? { code: 400, err: 'Check again the data', } : stats);
+	});
+};
+
 exports.jobStats = function(req, res) {
-	res.contentType('json');
-	db.keyword.totalStats(req.params.jobid, function(err, stats) {
-		var output = '';
-		if (err) output = JSON.stringify({ code: 400, err: 'Check again the data', });
-		else output = JSON.stringify(stats);
-		res.send(output);
+	db.keyword.getGroupedByURL(req.params.jobid, function(err, stats) {
+		if (err) res.json({ code: 400, err: 'Check again the data', });
+		else res.json(stats);
 	});
 };
 
 exports.jobOverallStats = function(req, res) {
-	res.contentType('json');
 	db.keyword.groupByMatch(req.params.jobid, function(err, stats) {
-		var output = '';
-		if (err) output = JSON.stringify({ code: 400, err: 'Check again the data', });
-		else output = JSON.stringify(stats);
-		res.send(output);
+		if (err) res.json({ code: 400, err: 'Check again the data', });
+		else res.json(stats);
 	});
 };
 
@@ -124,6 +124,9 @@ exports.addJob = function(req, res) {
 	time.setMinutes(hoursMinutes.split(':')[1]);
 	time.setHours(hoursMinutes.split(':')[0]);
 
+	console.log(req.body.urls);
+	console.log(req.body.groupNames);
+
 	var newJobData = {
 		name: req.body.name
 	  , added: new Date()
@@ -131,12 +134,21 @@ exports.addJob = function(req, res) {
 	  , end: null
 	  , status: 'waiting'
 	  , keywords: req.body.keywords.split(',')
-	  , urls: req.body.urls.split(',')
 	  , sources: req.body.sources
 	  , owner: req.session.user._id
 	  , repeat: req.body.repeat
 	  , parent: null
+	  , match: []
 	};
+
+	// Add the matching groups to data object literal
+	req.body.groupNames.forEach(function(url, index) {
+		var matchGroup = {
+			name: url
+		  , urls: req.body.urls[index].split(',')
+		};
+		newJobData.match.push(matchGroup);
+	});
 
 	db.job.newJob(newJobData, function(err, job) {
 		if (!err && job) {
