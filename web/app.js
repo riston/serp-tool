@@ -65,10 +65,12 @@ app.get('/serp/stats', routes.isUser, routes.serp.stats);
 app.get('/serp/delete/:jobid', routes.isUser, routes.serp.delete);
 app.get('/serp/edit/:jobid', routes.isUser, routes.serp.edit);
 app.get('/serp/view/:jobid', routes.isUser, routes.serp.view);
+app.get('/serp/job-overall/:jobid', routes.isUser, routes.serp.jobOverall);
 
 app.get('/serp/stats/:jobid', routes.isUser, routes.serp.jobStats);
 app.get('/serp/stats/overall/:jobid', routes.isUser, routes.serp.jobOverallStats);
 app.get('/serp/stats/line/:jobid', routes.isUser, routes.serp.jobLineStats);
+app.get('/serp/stats/all/:jobid', routes.isUser, routes.serp.jobAllStats);
 
 app.post('/serp/edit', routes.isUser, routes.serp.doEdit);
 app.post('/serp/add-job', routes.isUser, routes.serp.addJob);

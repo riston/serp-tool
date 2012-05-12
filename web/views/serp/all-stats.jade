@@ -1,0 +1,65 @@
+h1 Viewing overall stats of '#{job.name}'
+
+br
+div#charts
+for engine in job.sources
+    h3 #{engine}
+    div(id='chart-#{engine}', style='height: 250px')
+
+script(type='text/javascript')
+  var options = {
+    chart: {
+        renderTo: 'job-chart',
+        type: 'line',
+        plotBorderWidth: 1
+    },
+    title: { },
+    subtitle: { },
+    yAxis: {
+        title: {
+            text: 'Total position'
+        }
+    },
+    xAxis: { 
+        reversed: true
+    },
+    legend: {
+        layout: 'horizontal',
+        backgroundColor: '#FFFFFF',
+        align: 'center',
+        verticalAlign: 'bottom',
+        shadow: true
+    },
+    tooltip: {
+        crosshairs: true,
+        shared: true
+    },
+    plotOptions: {
+      column: {
+          pointPadding: 0.2,
+          borderWidth: 0
+      }
+    },
+  };
+
+  function getStats(jobid) {
+    $.get('/serp/stats/all/' + jobid, function(result) {
+        var engines = Object.keys(result);
+
+        engines.forEach(function(engine) {
+            (function(engine, options) {
+                options.title.text        = 'Search engine ' + engine + ' overall job stats';
+                options.xAxis.categories  = result[engine].categories;
+                options.series            = result[engine].series;
+                options.chart.renderTo    = 'chart-' + engine;
+                console.log(options);
+                chart = new Highcharts.Chart(options);
+
+            })(engine, options)
+        });
+    });   
+  }
+  $(document).ready(function() {
+        getStats('#{job._id}');
+  });
+  

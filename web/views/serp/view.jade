@@ -107,46 +107,6 @@ script(type='text/javascript')
     series: []
   };
 
-  function addSelectItems(items) {
-    items.forEach(function(item, index) {
-      $item = $('<li>', {
-        class: (index == 0) ? 'active' : ''  
-      }).append($('<a>', {
-          text: item
-        , href: '#' + item
-      }));
-
-      $('ul#match').append($item);
-    });
-  }
-
-  function getLineStats(jobid, options) {
-    $.get('/serp/stats/line/' + jobid, function(result) {
-      options.title.text        = 'Total position diagram';
-      options.xAxis.categories  = result.categories;
-      options.series            = result.series;
-  
-      chart = new Highcharts.Chart(options);      
-    });
-  }
-
-  function getStats(jobid, options, selectItem) {
-    $.get('/serp/stats/' + jobid, function(result) {
-      var keys = Object.keys(result)
-        , currentKey = keys[0];
-      
-      if (selectItem != undefined) currentKey = selectItem;
-      else addSelectItems(keys);
-      
-      options.title.text        = currentKey;
-      options.subtitle.text     = result[currentKey].group;
-      options.xAxis.categories  = result[currentKey].categories;
-      options.series            = result[currentKey].series;
-
-      chart = new Highcharts.Chart(options);
-    });  
-  }
-
   function getOverallStats(jobid, options) {
     $.get('/serp/stats/overall/' + jobid, function(result) {
       options.title.text        = "Overall job stats";
@@ -163,16 +123,6 @@ script(type='text/javascript')
       $table = $('<div>');
       $table.append($h3);
       $('#overall-table').append($table);
-    });
-  }
-
-  function addListControl(options) {
-    $('ul#match').on('click', 'li', function(e) {
-      $(this).parent().find('.active').removeClass('active');
-      $(this).addClass('active');
-      
-      var select = $(this).find('a').text();
-      getStats('#{job._id}', options, select);
     });
   }
 
@@ -257,10 +207,14 @@ script(type='text/javascript')
       , url: '/serp/stats/line/#{job._id}'
       , list: $('#total-match')
     };
-    listItemSelect.init(totalChartOptions, true);
-    //listItemSelect.loadChartWithItems();
 
-    //getLineStats('#{job._id}', lineChartOptions);
+    var matchChartOptions = {
+        chartOptions: optionsColumn
+      , url: '/serp/stats/#{job._id}'
+      , list: $('ul#match')
+    };
+
+    listItemSelect.init(totalChartOptions, true);
 
     // Load data only when the tab is selected
     $('a[data-toggle="tab"]').on('shown', function(e) {
@@ -282,8 +236,7 @@ script(type='text/javascript')
 
         case '#match':
           if (!isChartLoaded(optionsColumn.chart.renderTo)) {
-            getStats('#{job._id}', optionsColumn, undefined);
-            addListControl(optionsColumn);
+            listItemSelect.init(matchChartOptions, true);
           }
         break;
 
@@ -311,7 +264,7 @@ div.tabbable
       div.row
         br
         div.span3
-          h3 Matching item:
+          h3 Search engine:
           ul.nav.nav-pills.nav-stacked#total-match
         div.span9
           div(id="job-chart-line")

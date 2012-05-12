@@ -10,13 +10,25 @@ db.keyword.totalStats('4faa2cf24f9c874f0b000001', function(err, results) {
 	console.dir(results['www.ttu.ee'].series);
 });
 */
-db.keyword.getGroupTotals('4fabd9c547ee0ebf78000007', function(err, results) {
-	
-	console.log(util.inspect(results, false, null));
 
+
+/*
+db.keyword.getGroupTotals('4fabd9c547ee0ebf78000007', function(err, results) {
+	console.log(util.inspect(results, false, null));
 	//console.dir(results.series);
-	
+});*/
+
+db.keyword.findSubResults('4fabd9c547ee0ebf78000007', function(err, results) {
+	console.log(util.inspect(results, false, null));
+	//console.dir(results.series);
 });
+
+
+/*
+db.keyword.findParentAndChildren('4fabd9c547ee0ebf78000007', function(err, results) {
+	console.log(util.inspect(results, false, null));
+	//console.dir(results.series);
+});*/
 /*
 db.keyword.getUniqueGroupNames('4faa2cf24f9c874f0b000001', function(err, results) {
 	console.log(results);

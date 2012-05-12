@@ -118,17 +118,23 @@ var JobService = {
 
   deleteAll: function(jobId, cb) {
     id = db.ObjectID.createFromHexString(jobId);
-    job.remove( { $or: [ { _id: id }, { parent: id } ] }, function(err) {
+    
+    job.remove({ _id: id }, function(err) {
       if (err) return cb(err);
       else {
-        db.collection('keyword').remove( { job: id }, function(err) {
+        job.remove({ parent: id }, function(err) {
           if (err) return cb(err);
           else {
-            return cb(null, true);
+            db.collection('keyword').remove( { job: id }, function(err) {
+              if (err) return cb(err);
+              else {
+                return cb(null, true);
+              }
+            });
           }
         });
       }
-    });
+    })
   },
 
   updateJobStatus: function(id, newStatus, cb) {

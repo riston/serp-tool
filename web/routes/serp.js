@@ -41,6 +41,15 @@ exports.new = function(req, res) {
 	});
 };
 
+exports.jobOverall = function(req, res) {
+	db.job.findById(req.params.jobid, function(err, job) {
+		res.render('serp/all-stats.jade', {
+		   title: 'Job all stats'
+		 , job: job
+		});
+	});
+};
+
 exports.stats = function(req, res) {
 
 };
@@ -59,7 +68,6 @@ exports.doDelete = function(req, res) {
 };
 
 exports.doDeleteAll = function(req, res) {
-	console.log(req.body.jobid);
 	db.job.deleteAll(req.body.jobid, function(err, done) {
 		res.json((err) ? { code: 400, err: 'Deleting failed, something is wrong!', } 
 			: { code: 400, err: 'Deleted the job!', });
@@ -81,6 +89,13 @@ exports.jobStats = function(req, res) {
 
 exports.jobOverallStats = function(req, res) {
 	db.keyword.groupByMatch(req.params.jobid, function(err, stats) {
+		if (err) res.json({ code: 400, err: 'Check again the data', });
+		else res.json(stats);
+	});
+};
+
+exports.jobAllStats = function(req, res) {
+	db.keyword.findSubResults(req.params.jobid, function(err, stats) {
 		if (err) res.json({ code: 400, err: 'Check again the data', });
 		else res.json(stats);
 	});

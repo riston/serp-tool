@@ -24,11 +24,11 @@ mixin showTable(jobName)
       p
         strong Jobs in list: #{jobs[jobName].length}
     div.pull-right
-      button(class='btn btn-small btn-danger delete-all',data-jobid='#{jobs[jobName].length > 0 ? jobs[jobName][0]._id : '#'}') 
+      button(class='btn btn-small btn-danger delete-all',data-jobid='#{jobs[jobName].length > 0 ? jobs[jobName][jobs[jobName].length - 1]._id : '#'}') 
         i.icon-trash.icon-white
         |  Delete all jobs
       &nbsp;
-      a(class='btn btn-small btn-info',href='#{jobs[jobName].length > 0 ? '/serp/stats/all/' + jobs[jobName][0]._id : '#'}') 
+      a(class='btn btn-small btn-info',href='#{jobs[jobName].length > 0 ? '/serp/job-overall/' + jobs[jobName][0]._id : '#'}') 
         i.icon-info-sign.icon-white
         |  Overall
 
@@ -55,8 +55,9 @@ mixin showTable(jobName)
           a(href="/serp/edit/#{job._id}",title='Edit')
             i.icon-pencil
           &nbsp;
-          a(href="/serp/view/#{job._id}",title='View')
-            i.icon-eye-open
+          if job.status == 'finished'
+            a(href="/serp/view/#{job._id}",title='View')
+              i.icon-eye-open
 
 div.accordion#name-accordion
   for name, key in jobNames

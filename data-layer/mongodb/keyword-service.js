@@ -1,6 +1,7 @@
 var db        = require(__dirname + '/config.js').db
   , keyword   = db.collection('keyword')
   , async     = require('async')
+  , moment    = require('moment')
   , _         = require('underscore');
 
 var KeywordService = {
@@ -28,6 +29,74 @@ var KeywordService = {
     });
   },
 
+  findParentAndChildren: function(jobid, cb) {
+    var id = db.ObjectID.createFromHexString(jobid);
+
+    db.collection('job').findById(jobid, function(err, job) {
+      if (err) return cb(err);
+      else {
+        var where = { name: job.name, status: 'finished' }
+          , sortBy = { start: -1 };
+
+        db.collection('job').find(where).sort(sortBy).limit(20).toArray(function(err, jobs) {
+          if (err) return cb(err);
+          else {
+            return cb(null, jobs);  
+          }
+        });
+      }
+    });
+  },
+
+  findSubResults: function(jobid, cb) {
+    var util = require('util');
+    var self = this;
+    var dataSet = {};
+    this.findParentAndChildren(jobid, function(err, jobs) {
+      if (err) return cb(err);
+      
+      async.forEach(jobs, function(job, cb) {
+        self.getGroupTotals(job._id.toString(), function(err, result) {
+          var engines = Object.keys(result);
+          engines.forEach(function(engine) {
+            if (dataSet[engine] == undefined) {
+              dataSet[engine] = {};
+              dataSet[engine]['categories'] = [];
+              dataSet[engine]['series'] = [];
+            }
+            var formatedDate = moment(result[engine].date).format('D/M/YYYY');
+            // Check if we have such date in array and do not add it twice
+            if (_.indexOf(dataSet[engine]['categories'], formatedDate) != -1) {
+              cb(null, result);
+            }
+
+            dataSet[engine].categories.push(formatedDate);
+
+            result[engine].series.forEach(function(seria, index) {
+              if (dataSet[engine]['series'][index] == undefined) {
+                // No name or data is defined
+                dataSet[engine]['series'][index] = {};
+                dataSet[engine]['series'][index]['name'] = result[engine]['series'][index]['name'];
+                dataSet[engine]['series'][index]['data'] = [];
+              }
+              //if ()
+              if (dataSet[engine]['series'][index]['name'] == result[engine]['series'][index]['name']) {
+                var sum = _.reduce(result[engine]['series'][index]['data'], function(memo, num) { return memo + num }, 0);
+                dataSet[engine]['series'][index]['data'].push(sum);
+              }
+            });
+          });
+
+          cb(null, result);
+        });  
+      }, function(err) {
+        // Has gone through all the keywords
+        return cb(null, dataSet);
+      });
+      
+    });
+  },
+
   groupStats: function(jobid, cb) {
     var _id = db.ObjectID.createFromHexString(jobid), self = this;
 
@@ -52,6 +121,7 @@ var KeywordService = {
                   engine:     keyword.source,
                   group:      group.name,
                   match:      url,
+                  date:       job.start,
                   title:      findResult == undefined ? '' : findResult.title,
                   url:        findResult == undefined ? '' : findResult.href, 
                   position:   findResult == undefined ? self.keywordResultLimit : findResult.index
@@ -94,8 +164,9 @@ var KeywordService = {
         var newDataSet = {};
         Object.keys(groupedByEngine).forEach(function(engine) {
           if (newDataSet[engine] == undefined) newDataSet[engine] = {};
-          newDataSet[engine].series = [];
+          newDataSet[engine].series     = [];
           newDataSet[engine].categories = keywords;
+          newDataSet[engine].date       = results[0].date;
 
           // Get the results grouped by group names
           var grouped = _.groupBy(groupedByEngine[engine], function(elem) {
