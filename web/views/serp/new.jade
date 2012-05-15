@@ -1,3 +1,23 @@
+mixin groupForm(data)
+  div.group
+    hr
+    
+    div.row
+      div.span6
+        label.control-label Group name:
+        div.controls
+          input(type="text",name="groupNames[]",class="input span4",value="#{data.name || ''}")
+      div.span6
+        button(class='btn btn-danger remove-group') 
+          i.icon-trash
+          |  Remove
+    br
+
+    div.control-group
+      label.control-label Matching URL-s:
+      div.controls
+        textarea(class='span4',rows='2',name='urls[]') #{data.urls || ''}
+
 h2 Adding new job
 
 div
@@ -50,29 +70,13 @@ form(class="form-horizontal",name="add-job",method="post",action="/serp/add-job"
       button(class='btn btn-mini btn-info',class='add-group')
         i.icon-plus-sign
         |  Add group
-
+      mixin groupForm({})
+      
     div.form-actions
       input(type="submit",value="Add job",name="add-job",class="btn btn-primary btn-medium")
 
   script(id='groupTpl',type="text/x-jquery-tmpl")
-    div.group
-      hr
-      
-      div.row
-        div.span6
-          label.control-label Group name:
-          div.controls
-            input(type="text",name="groupNames[]",class="input span4")
-        div.span6
-          button(class='btn btn-danger remove-group') 
-            i.icon-trash
-            |  Remove
-      br
-
-      div.control-group
-        label.control-label Matching URL-s:
-        div.controls
-          textarea(class='span4',rows='2',name='urls[]')
+    mixin groupForm({})
 
   script(type='text/javascript',src='/javascripts/new-page.js')
   script(type='text/javascript',src='/javascripts/jquery.tmpl.min.js')

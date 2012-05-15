@@ -1,3 +1,23 @@
+mixin groupForm(data)
+  div.group
+    hr
+    
+    div.row
+      div.span6
+        label.control-label Group name:
+        div.controls
+          input(type="text",name="groupNames[]",class="input span4",value="#{data.name || ''}")
+      div.span6
+        button(class='btn btn-danger remove-group') 
+          i.icon-trash
+          |  Remove
+    br
+
+    div.control-group
+      label.control-label Matching URL-s:
+      div.controls
+        textarea(class='span4',rows='2',name='urls[]') #{data.urls || ''}
+
 h2 Editing job
 
 form(class="form-horizontal",name="edit",method="post",action="/serp/edit")
@@ -42,13 +62,21 @@ form(class="form-horizontal",name="edit",method="post",action="/serp/edit")
         textarea(class='span4',rows='4',name='keywords')
           #{job.keywords.join(',')}
 
-    div.control-group
-      label.control-label URL-s:
-      div.controls
-        textarea(class='span4',rows='4',name='urls')
-          #{job.urls.join(',')}
+    h3 Group matching
+    p.group-text It is useful to group the matching sets, like if the company has many sub domains: 
+      button(class='btn btn-mini btn-info',class='add-group')
+        i.icon-plus-sign
+        |  Add group
+      for match in job.match
+        mixin groupForm(match)
 
     input(type="hidden",name="jobId",value="#{job._id}")      
 
     div.form-actions
       input(type="submit",value="Edit job",name="edit-job",class="btn btn-primary btn-medium")
+
+  script(id='groupTpl',type="text/x-jquery-tmpl")
+    mixin groupForm({})
+
+  script(type='text/javascript',src='/javascripts/new-page.js')
+  script(type='text/javascript',src='/javascripts/jquery.tmpl.min.js')

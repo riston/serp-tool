@@ -14,5 +14,4 @@ $(document).ready(function() {
 		$(this).closest('.group').remove();
 	});
 
-	addBlock();
 });
