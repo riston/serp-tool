@@ -18,7 +18,7 @@ db.keyword.getGroupTotals('4fabd9c547ee0ebf78000007', function(err, results) {
 	//console.dir(results.series);
 });*/
 
-db.keyword.findSubResults('4fabd9c547ee0ebf78000007', function(err, results) {
+db.keyword.groupStats('4fabd9c547ee0ebf78000007', function(err, results) {
 	console.log(util.inspect(results, false, null));
 	//console.dir(results.series);
 });

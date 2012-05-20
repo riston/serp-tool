@@ -118,8 +118,11 @@ Scrape.prototype.run = function(cb) {
     var index = 1
       , flattenResults = _.flatten(results)
       , indexResults = _.map(flattenResults, function(result) {
-          result.index = index++;
-          return result;
+          console.log(result);
+          if (result !== undefined) {
+            result.index = index++;
+            return result;  
+          }
         });
       
     cb(null, indexResults);

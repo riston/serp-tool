@@ -60,13 +60,16 @@ mixin showTable(jobName)
               i.icon-eye-open
 
 div.accordion#name-accordion
-  for name, key in jobNames
-    div.accordion-group
-      div.accordion-heading
-         a(class='accordion-toggle',data-toggle='collapse',data-parent='#name-accordion',href="##{key}") #{name}
-      div(id='#{key}',class='accordion-body collapse',style='height: 0px')
-        div.accordion-inner
-          mixin showTable(name)
+  if jobNames.length > 0
+    for name, key in jobNames
+      div.accordion-group
+        div.accordion-heading
+           a(class='accordion-toggle',data-toggle='collapse',data-parent='#name-accordion',href="##{key}") #{name}
+        div(id='#{key}',class='accordion-body collapse',style='height: 0px')
+          div.accordion-inner
+            mixin showTable(name)
+  else
+    p There are currently no jobs added, click on the menu 'Serp' > 'New-job'.
 
 script(id='errorTpl',type="text/x-jquery-tmpl")
   div.alert.alert-block.alert-error.fade.in
