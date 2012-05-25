@@ -4,25 +4,41 @@ var Scrape 		= require(__dirname + '/scraper/scrape.js');
 var db			= require(__dirname + '/web/database.js');
 var util	 	= require('util');
 
+var newKeyword = {
+	  keyword: 'nodejs'
+	, source: 'google'
+};
+
+/*
+var s = new Scrape(newKeyword);
+s.run(function(err, result) {
+	console.log(result);
+});*/
 //http://localhost:3000/serp/view/
 /*
-db.keyword.totalStats('4faa2cf24f9c874f0b000001', function(err, results) {
-	console.dir(results['www.ttu.ee'].series);
+db.keyword.findJobKeywordPositionInTime('4fbbd0d016fd19d42c000007', function(err, results) {
+	console.dir(results);
+});
+
+db.job.delete('4fbd3c5b16fd19d42c000070', function(err) {
+
+});
+
+db.job.cleanJob('4fbbd1cb16fd19d42c00001d', function(err, job) {
+
 });
 */
-
-
 /*
 db.keyword.getGroupTotals('4fabd9c547ee0ebf78000007', function(err, results) {
 	console.log(util.inspect(results, false, null));
 	//console.dir(results.series);
-});*/
+});
 
 db.keyword.groupStats('4fabd9c547ee0ebf78000007', function(err, results) {
 	console.log(util.inspect(results, false, null));
 	//console.dir(results.series);
 });
-
+*/
 
 /*
 db.keyword.findParentAndChildren('4fabd9c547ee0ebf78000007', function(err, results) {

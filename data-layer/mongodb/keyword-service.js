@@ -48,8 +48,20 @@ var KeywordService = {
     });
   },
 
+  findJobKeywordPositionInTime: function(jobid, cb) {
+    var self = this;
+    this.findParentAndChildren(jobid, function(err, jobs) {
+      if (err) return cb(err);
+      
+      async.forEach(jobs, function(job, cb) {
+
+      }, function(err) {
+        return cb(null, { 'empty': true });
+      });
+    });
+  },
+
   findSubResults: function(jobid, cb) {
-    var util = require('util');
     var self = this;
     var dataSet = {};
     this.findParentAndChildren(jobid, function(err, jobs) {

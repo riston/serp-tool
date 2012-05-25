@@ -116,6 +116,38 @@ var JobService = {
     });
   },
 
+  delete: function(jobId, cb) {
+    var id = db.ObjectID.createFromHexString(jobId);
+    job.findOne({ _id: id }, function(err, jobResult) {
+      if (err) return cb(err);
+      else {
+        // Find next job
+        job.findOne({ parent: id}, function(err, jobNext) {
+          // Find previous job
+          job.findOne({ _id: jobResult.parent }, function(err, jobPrev) {
+            if (jobPrev == null || jobPrev == undefined) {
+              // No previous job, modify the next job parent only
+              job.update({ parent: id }, { $set: { parent: null } }, function(err) {
+                removeJob(id, cb);                
+              });
+            } else if (jobNext != null || jobNext != undefined) {
+              job.update({ _id: jobNext.id }, { $set: { parent: jobPrev.id } }, function(err) {
+                removeJob(id, cb);
+              });
+            }
+          });
+        });
+      }
+    });
+
+    function removeJob(id, funCb) {
+      job.remove({ _id: id }, function(err) {
+        if (!err) return funCb(err);
+        else return funCb(null);
+      });      
+    }
+  },
+
   deleteAll: function(jobId, cb) {
     id = db.ObjectID.createFromHexString(jobId);
     
@@ -137,10 +169,29 @@ var JobService = {
     })
   },
 
+  /**
+   * Remove all the keywords and set the status again to waiting.
+   */ 
+  cleanJob: function(jobId, cb) {
+    var id = db.ObjectID.createFromHexString(jobId)
+      , self = this;
+    db.collection('keyword').remove({ job: id }, function(err) {
+      if (!err) {
+        self.updateJobStatus(id, 'waiting', function(err, job) {
+          if (err) return cb(err);
+          else return(null, job);
+        });        
+      } else {
+        return cb(err);
+      }
+    });
+
+  },
+
   updateJobStatus: function(id, newStatus, cb) {
     job.update({ _id: id }, { $set: { status: newStatus } }, function(err, job) {
-      if (err) cb(err);
-      else cb(null, job)
+      if (err) return cb(err);
+      else return cb(null, job)
     });
   }
 };

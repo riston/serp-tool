@@ -64,7 +64,18 @@ exports.delete = function(req, res) {
 
 // POST method for deletion
 exports.doDelete = function(req, res) {
-	//if (req.body.)
+	if (req.body.delete == 'Delete') {
+		console.log('Delete pressed ', req.body.jobId);
+		db.job.delete(req.body.jobId, function(err) {
+			if (!err) req.flash('success', 'Delete job succeed!');
+			else req.flash('error', 'Job deleting failed try again!');
+			res.redirect('/serp');
+		});
+	} else {
+		// the cancel button pressed
+		res.redirect('/serp');	
+	}
+	
 };
 
 exports.doDeleteAll = function(req, res) {
@@ -124,15 +135,29 @@ exports.doEdit = function(req, res) {
 	var time = new Date(req.body.startDate);
 	time.setMinutes(req.body.startTime.split(':')[1]);
 	time.setHours(req.body.startTime.split(':')[0]);
+	console.log(req.body);
 
 	var editJob = {
 		name: 		req.body.name
 	  , start: 		time
 	  , keywords: 	req.body.keywords.split(',')
 	  , urls: 		req.body.urls.split(',')
+	  , status: 	req.body.status
 	  , sources: 	req.body.sources
 	  , repeat: 	req.body.repeat
+	  , match: 		[]
 	};
+	console.log('Group matches ', req.body.groupNames);
+
+	// Add the matching groups to data object literal
+	req.body.groupNames.forEach(function(url, index) {
+		var matchGroup = {
+			name: url
+		  , urls: req.body.urls[index].split(',')
+		};
+		editJob.match.push(matchGroup);
+	});
+
 	db.job.update(req.body.jobId, editJob, function(err) {
 		if (!err) req.flash('success', 'Edit successfully!');
 		else req.flash('error', 'There were problems editing job!');

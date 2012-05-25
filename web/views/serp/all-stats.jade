@@ -8,6 +8,8 @@ for engine in job.sources
     h3 #{engine}
     div(id='chart-#{engine}', style='height: 250px')
 
+input(type='hidden',name='jobId',id='jobId',value='#{job._id}')
+
 script(type='text/javascript')
   var options = {
     chart: {
@@ -38,10 +40,28 @@ script(type='text/javascript')
         shared: true
     },
     plotOptions: {
-      column: {
-          pointPadding: 0.2,
-          borderWidth: 0
-      }
+        series: {
+            pointPadding: 0.2,
+            borderWidth: 0,
+            cursor: 'pointer',
+            point: {
+                events: {
+                    click: function(e) {
+                        // To get the data which were clicked check the this.catergory
+                        // e.point.category e.point.config, e.point.series.name
+                        var point = {
+                            category: this.category
+                          , y: this.y
+                          , series: this.series.name
+                          , engine: this.series.chart.options.chart.renderTo.replace('chart-', '')
+                          , jobId: $('input#jobId').val()
+                        };
+                        console.log(point);
+                        console.log(this);
+                    }
+                }     
+            }
+        }
     },
   };
 

@@ -39,6 +39,14 @@ form(class="form-horizontal",name="edit",method="post",action="/serp/edit")
         p.help-block Use time format HH:MM
 
     div.control-group
+      label.control-label Status:
+      div.controls
+        select(class='span2',name='status')
+          status = [ 'finished', 'started', 'waiting', 'queued']
+          for item in status
+            option(selected=job.status == item) #{item}
+
+    div.control-group
       label.control-label Repeat every:
       div.controls
         select(class='span2',name='repeat')
