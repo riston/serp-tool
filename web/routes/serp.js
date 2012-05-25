@@ -135,19 +135,16 @@ exports.doEdit = function(req, res) {
 	var time = new Date(req.body.startDate);
 	time.setMinutes(req.body.startTime.split(':')[1]);
 	time.setHours(req.body.startTime.split(':')[0]);
-	console.log(req.body);
 
 	var editJob = {
 		name: 		req.body.name
 	  , start: 		time
 	  , keywords: 	req.body.keywords.split(',')
-	  , urls: 		req.body.urls.split(',')
 	  , status: 	req.body.status
 	  , sources: 	req.body.sources
 	  , repeat: 	req.body.repeat
 	  , match: 		[]
 	};
-	console.log('Group matches ', req.body.groupNames);
 
 	// Add the matching groups to data object literal
 	req.body.groupNames.forEach(function(url, index) {

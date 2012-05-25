@@ -8,7 +8,8 @@ var newKeyword = {
 	  keyword: 'nodejs'
 	, source: 'google'
 };
-
+console.log('test');
+console.log(util.format(newKeyword));
 /*
 var s = new Scrape(newKeyword);
 s.run(function(err, result) {
