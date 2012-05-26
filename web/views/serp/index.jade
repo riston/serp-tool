@@ -78,5 +78,9 @@ script(id='errorTpl',type="text/x-jquery-tmpl")
     p
       button(class='btn btn-danger') Delete
 
-script(type='text/javascript',src='/javascripts/list-page.js')
-script(type='text/javascript',src='/javascripts/jquery.tmpl.min.js')
+script(type='text/javascript')
+  head.ready('jquery', function() {
+    head.js('/javascripts/list-page.js');
+    head.js('/javascripts/jquery.tmpl.min.js');
+  });
+

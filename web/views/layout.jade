@@ -6,10 +6,8 @@ html
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel='stylesheet', href='/plugins/kalendae/kalendae.css')
 
-    script(type='text/javascript',src='/javascripts/jquery-1.7.2.min.js')
-    script(type='text/javascript',src='/plugins/bootstrap/js/bootstrap.min.js')
-    script(type='text/javascript',src='/javascripts/highcharts.js')
-    
+    script(type='text/javascript',src='/javascripts/head.load.min.js')
+
   body
     div.navbar.navbar-fixed-top
       div.navbar-inner
@@ -49,6 +47,12 @@ html
       footer
         p Made by Risto Novik &copy; #{new Date().getFullYear()}
 
-    script(type='text/javascript',src='/plugins/kalendae/kalendae.min.js')
-    script(type='text/javascript',src='/javascripts/moment.min.js')
-    script(type='text/javascript',src='/javascripts/main.js')
+  script
+    head.js(
+      { jquery: '/javascripts/jquery-1.7.2.min.js' },
+      '/plugins/bootstrap/js/bootstrap.min.js',
+      { highcharts: '/javascripts/highcharts.js' }
+      //'/javascripts/highcharts.js',
+      //'/plugins/kalendae/kalendae.min.js',
+      //'/javascripts/moment.min.js'
+      );    

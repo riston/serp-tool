@@ -26,7 +26,14 @@ script(type='text/javascript')
         reversed: true
     },
     xAxis: { 
-        reversed: true
+        reversed: true,
+        labels: {
+            rotation: -40,
+            align: 'right',
+            style: {
+                font: 'normal 10px Verdana, sans-serif'
+            }
+        }
     },
     legend: {
         layout: 'horizontal',
@@ -76,13 +83,14 @@ script(type='text/javascript')
                 options.series            = result[engine].series;
                 options.chart.renderTo    = 'chart-' + engine;
                 console.log(options);
-                chart = new Highcharts.Chart(options);
 
+                chart = new Highcharts.Chart(options);
             })(engine, options)
         });
     });   
   }
-  $(document).ready(function() {
-        getStats('#{job._id}');
+
+  head.ready(function() {
+    getStats('#{job._id}');
   });
   

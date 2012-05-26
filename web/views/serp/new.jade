@@ -33,7 +33,7 @@ form(class="form-horizontal",name="add-job",method="post",action="/serp/add-job"
     div.control-group
       label.control-label Start date:
       div.controls
-        input(type="text",name="startDate",class="input span2 auto-kal")
+        input(type="text",name="startDate",class="input span2 auto-kal",autocomplete='off')
 
     div.control-group
       label.control-label Time:
@@ -78,5 +78,10 @@ form(class="form-horizontal",name="add-job",method="post",action="/serp/add-job"
   script(id='groupTpl',type="text/x-jquery-tmpl")
     mixin groupForm({})
 
-  script(type='text/javascript',src='/javascripts/new-page.js')
-  script(type='text/javascript',src='/javascripts/jquery.tmpl.min.js')
+  script(type='text/javascript')
+    head.ready('jquery', function() {
+      head.js('/javascripts/new-page.js');
+      head.js('/javascripts/jquery.tmpl.min.js');
+      head.js('/plugins/kalendae/kalendae.min.js');
+    });
+    

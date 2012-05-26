@@ -86,5 +86,9 @@ form(class="form-horizontal",name="edit",method="post",action="/serp/edit")
   script(id='groupTpl',type="text/x-jquery-tmpl")
     mixin groupForm({})
 
-  script(type='text/javascript',src='/javascripts/new-page.js')
-  script(type='text/javascript',src='/javascripts/jquery.tmpl.min.js')
+  script(type='text/javascript')
+    head.ready('jquery', function() {
+      head.js('/javascripts/new-page.js');
+      head.js('/javascripts/jquery.tmpl.min.js');
+      head.js('/plugins/kalendae/kalendae.min.js');
+    });
