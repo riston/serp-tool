@@ -14,8 +14,8 @@ var KeywordService = {
 
   addResult: function(keywordId, result, cb) {
     keyword.update({ _id: keywordId }, { $set: { results: result } }, function(err) {
-      if (err) cb(err);
-      else cb(null);
+      if (err) return cb(err);
+      else return cb(null);
     });
   },
 
@@ -24,8 +24,17 @@ var KeywordService = {
     keywordObject.results = [];
 
     keyword.insert(keywordObject, function(err, result) {
-      if (err) cb(err);
-      else cb(null, result);      
+      if (err) return cb(err);
+      else return cb(null, result);      
+    });
+  },
+
+  findJobKeywords: function(jobid, cb) {
+    var id = db.ObjectID.createFromHexString(jobid);
+
+    keyword.find({ job: id }).toArray(function(err, keywords) {
+      if (err) return cb(err);
+      else return cb(null, keywords);
     });
   },
 

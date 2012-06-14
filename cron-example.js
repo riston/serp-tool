@@ -9,9 +9,12 @@ var newKeyword = {
 	, source: 'google'
 };
 
-db.keyword.getJobKeywords('4fbbd0d016fd19d42c000007', function(err, keywords) {
+db.keyword.findJobKeywords('4fbbd0d016fd19d42c000007', function(err, keywords) {
 	if (!err) {
 		console.log(keywords);
+		keywords.forEach(function(keyword) {
+			console.log('Keyword', keyword.results.length);
+		});
 	}
 });
 
