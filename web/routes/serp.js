@@ -1,19 +1,5 @@
 var db = require(__dirname + '/../database.js');
 
-/*
-// Route param pre condition
-app.param('postid', function(req, res, next, id) {
-  
-
-  db.post.findOne({ _id: db.ObjectId(id) }, function(err, post) {
-    if (err) return next(new Error('Make sure you provided correct post id'));
-    if (!post) return next(new Error('Post loading failed'));
-    req.post = post;
-    next();
-  });
-});
-*/
-
 exports.checkJobId = function(req, res, next, id) {
 	if (id.length != 24) throw next(new Error('The job id is not having correct length'));
 	db.job.findOne(id, function(err, job) {
@@ -148,9 +134,14 @@ exports.doEdit = function(req, res) {
 
 	// Add the matching groups to data object literal
 	req.body.groupNames.forEach(function(url, index) {
+		var urls = req.body.urls[index].split(',');
+		urls = urls.map(function(url) {
+			return url.trim();
+		});
+
 		var matchGroup = {
 			name: url
-		  , urls: req.body.urls[index].split(',')
+		  , urls: urls
 		};
 		editJob.match.push(matchGroup);
 	});
@@ -170,9 +161,6 @@ exports.addJob = function(req, res) {
 	time.setMinutes(hoursMinutes.split(':')[1]);
 	time.setHours(hoursMinutes.split(':')[0]);
 
-	console.log(req.body.urls);
-	console.log(req.body.groupNames);
-
 	var newJobData = {
 		name: req.body.name
 	  , added: new Date()
@@ -189,9 +177,14 @@ exports.addJob = function(req, res) {
 
 	// Add the matching groups to data object literal
 	req.body.groupNames.forEach(function(url, index) {
+		var urls = req.body.urls[index].split(',');
+		urls = urls.map(function(url) {
+			return url.trim();
+		});
+
 		var matchGroup = {
 			name: url
-		  , urls: req.body.urls[index].split(',')
+		  , urls: urls
 		};
 		newJobData.match.push(matchGroup);
 	});
