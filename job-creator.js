@@ -4,13 +4,26 @@ var kue     = require('kue')
   , jobs    = kue.createQueue()
   , Job     = kue.Job;
 
-var cronRunTime = '*/10 * * * *';
+var cronRunTime = '*/10 * * * *'
+  , jobFailCheckTime = '*/5 * * * *';
 
-var newInterval = cron.CronJob(cronRunTime, function() {
-  JobCreator.addNew();
-});
+// Execute the node cron jobs
+try {
+
+  var newInterval = new cron.CronJob(cronRunTime, function() {
+    JobCreator.addNew();
+  }, null, true);
+
+  var failedJobInterval = new cron.CronJob(jobFailCheckTime, function() {
+    JobFail.check();
+  }, null, true);
+  
+} catch (ex) {
+  console.log('Invalid cron pattern ', ex);
+}
 
 var JobCreator = {
+
   addNew: function() {
     DB.job.findJobToProcess(function(err, dataJobs) {
       if (!err) {
@@ -33,7 +46,14 @@ var JobCreator = {
       }
     });    
   }
-}
+};
+
+var JobFail = {
+
+  check: function() {
+
+  }
+};
 
 // Web interface for the kue
 kue.app.listen(3030);

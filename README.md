@@ -13,14 +13,14 @@ Requirements to installation:
  - MongoDB v2.04
  - Node v0.6.15
 
-To keep the processes alive, install the __forever_, this installation needs __root_ permission.
+To keep the processes alive, install the _forever_, this installation needs _root_ permission.
 
 	sudo npm install -g forever
 
-Clone, extract the code place where you need. Change the project directory to __serp-tool__.
+Clone, extract the code place where you need. Change the project directory to _serp-tool_.
 Now you can start installing the libaries needed, dependencies are handled by the package.json file.
 
--- This command does not need the root privilege, only directory where package.json is located.
+This command does not need the root privilege, only directory where package.json is located.
 
 	npm install
 

@@ -175,6 +175,7 @@ var JobService = {
   cleanJob: function(jobId, cb) {
     var id = db.ObjectID.createFromHexString(jobId)
       , self = this;
+      
     db.collection('keyword').remove({ job: id }, function(err) {
       if (!err) {
         self.updateJobStatus(id, 'waiting', function(err, job) {

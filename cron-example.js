@@ -8,6 +8,13 @@ var newKeyword = {
 	  keyword: 'nodejs'
 	, source: 'google'
 };
+
+db.keyword.getJobKeywords('4fbbd0d016fd19d42c000007', function(err, keywords) {
+	if (!err) {
+		console.log(keywords);
+	}
+});
+
 console.log('test');
 console.log(util.format(newKeyword));
 /*
