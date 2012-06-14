@@ -25,3 +25,11 @@ Now you can start installing the libaries needed, dependencies are handled by th
 	npm install
 
 The installation should end without any errors, or some of the libraries might be not installed.
+
+
+Running application
+=========
+
+	forever start job-process.js
+	forever start job-creator.js
+	forever start web/app.js
