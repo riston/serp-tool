@@ -93,7 +93,7 @@ Scrape.prototype.generatePageFunctions = function() {
     // Isolate the variable i or the var i will be last value
     (function(i) {
       functionList.push(function(cb) {
-        // Inner functions which will be called in seriers
+        // Inner functions which will be called in series
         var timeoutTime = parseInt(Math.random() * 5000 + 1000, 10);
 
         setTimeout(function() {

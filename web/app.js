@@ -72,7 +72,7 @@ app.get('/serp/stats/overall/:jobid', routes.isUser, routes.serp.jobOverallStats
 app.get('/serp/stats/line/:jobid', routes.isUser, routes.serp.jobLineStats);
 app.get('/serp/stats/all/:jobid', routes.isUser, routes.serp.jobAllStats);
 
-app.post('/serp/delete/:jobid', routes.isUser, routes.serp.doDelete)
+app.post('/serp/delete/:jobid', routes.isUser, routes.serp.doDelete);
 app.post('/serp/edit', routes.isUser, routes.serp.doEdit);
 app.post('/serp/add-job', routes.isUser, routes.serp.addJob);
 app.post('/serp/delete-all', routes.isUser, routes.serp.doDeleteAll);
