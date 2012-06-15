@@ -28,36 +28,35 @@ form(class="form-horizontal",name="add-job",method="post",action="/serp/add-job"
     div.control-group
       label.control-label Job name:
       div.controls
-        input(type="text",name="name",class="span4")
+        input(type="text",name="name",class="span4",value="#{(form.name) ? form.name : ''}")
 
     div.control-group
       label.control-label Start date:
       div.controls
-        input(type="text",name="startDate",class="input span2 auto-kal",autocomplete='off')
+        input(type="text",name="startDate",class="input span2 auto-kal",value="#{(form.startDate) ? form.startDate : ''}",autocomplete="off")
 
     div.control-group
       label.control-label Time:
       div.controls
-        input(type="text",name="startTime",class="input span2")
+        input(type="text",name="startTime",class="input span2",value="#{(form.startTime) ? form.startTime : ''}")
         p.help-block Use time format HH:MM
 
     div.control-group
       label.control-label Repeat every:
       div.controls
+        repeation = [ 'no-repeat', 'day', 'week', 'month']
         select(class='span2',name='repeat')
-          option no-repeat
-          option day
-          option week
-          option month
+          for repeat in repeation
+            option(selected=((form.repeat) ? form.repeat == repeat : false)) #{repeat}
 
     div.control-group
       label.control-label Sources:
       div.controls
         select(class='span2',name='sources',multiple='multiple')
-          option google
-          option neti.ee
-          option yahoo
-          option duckduckgo
+          enginges = [ 'google', 'neti.ee', 'yahoo', 'duckduckgo']
+          for engine in enginges
+            option(selected=(form.sources ? form.sources.indexOf(engine) != -1 : false)) #{engine}
+
         p.help-block Source where to look for result pages, to choose multiple items use CTRl+ left click.
 
     div.control-group

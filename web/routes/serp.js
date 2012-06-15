@@ -23,7 +23,8 @@ exports.index = function(req, res) {
 
 exports.new = function(req, res) {
   res.render('serp/new.jade', {
-    title: 'New job'
+      title: 'New job'
+    , form: {}
   });
 };
 
@@ -123,9 +124,9 @@ exports.doEdit = function(req, res) {
   time.setHours(req.body.startTime.split(':')[0]);
 
   var editJob = {
-    name:     req.body.name
+      name:     req.body.name
     , start:    time
-    , keywords:   req.body.keywords.split(',')
+    , keywords: req.body.keywords.split(',')
     , status:   req.body.status
     , sources:  req.body.sources
     , repeat:   req.body.repeat
@@ -140,7 +141,7 @@ exports.doEdit = function(req, res) {
     });
 
     var matchGroup = {
-      name: url
+        name: url
       , urls: urls
     };
     editJob.match.push(matchGroup);
@@ -160,10 +161,20 @@ exports.addJob = function(req, res) {
   jobAddingErrors = req.validationErrors(true);
   if (jobAddingErrors) {
     // There are validation errors
+    console.log(req.body);
+    var form = {
+        name:       req.body.name
+      , startDate:  req.body.startDate
+      , startTime:  req.body.startTime
+      , keywords:   req.body.keywords
+      , repeat:     req.body.repeat
+      , sources:    req.body.sources
+    };
+
     req.flash('error', 'There were problems on form check again!');
-    console.log(jobAddingErrors);
     res.render('serp/new.jade', {
-      title: 'New job'
+        title: 'New job'
+      , form: form
     });
     return;
   }
@@ -220,7 +231,7 @@ var assertJobAdding = function(req) {
   req.assert('startTime', 'Use the time format HH:MM').is(/^[1-2][0-9]:[0-5][0-9]$/);
   req.assert('repeat', 'Select repeat frequency from select box').isIn(['day', 'week', 'month']);
 
-  var fields = ['name', 'startDate', 'startTime', 'repeat', 'sources', 'keywords'];
+  var fields = ['name', 'startDate', 'startTime', 'repeat', 'keywords'];
   fields.forEach(function(field) {
     req.assert(field, 'The field ' + field + ' should not be empty!').notEmpty();
   });
