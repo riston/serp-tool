@@ -27,7 +27,6 @@ var JobCreator = {
   addNew: function() {
     DB.job.findJobToProcess(function(err, dataJobs) {
       if (!err) {
-        console.log(dataJobs);
         dataJobs.forEach(function(job) {
           var current = jobs.create('serp', {
               title: job.name

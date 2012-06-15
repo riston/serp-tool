@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 forever start job-process.js
 forever start job-creator.js
