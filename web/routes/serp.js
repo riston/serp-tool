@@ -227,7 +227,9 @@ exports.addJob = function(req, res) {
 
 var assertJobAdding = function(req) {
 
+  // Format check 01/23/2012
   req.assert('startDate', 'Check the job start date again!').is(/^\d{2}\/\d{2}\/\d{4}$/);
+  // Format time HH:MM
   req.assert('startTime', 'Use the time format HH:MM').is(/^[1-2][0-9]:[0-5][0-9]$/);
   req.assert('repeat', 'Select repeat frequency from select box').isIn(['day', 'week', 'month']);
 

@@ -70,14 +70,21 @@ var KeywordService = {
     });
   },
 
+  /**
+   * Overall statistics, line chart, goes over the time.
+   * Each point has group by date and the total of keyword positions.
+   */
   findSubResults: function(jobid, cb) {
-    var self = this;
-    var dataSet = {};
+    var self = this
+      , dataSet = {};
+
     this.findParentAndChildren(jobid, function(err, jobs) {
       if (err) return cb(err);
       
       async.forEach(jobs, function(job, cb) {
         self.getGroupTotals(job._id.toString(), function(err, result) {
+
+          // Get the search engines
           var engines = Object.keys(result);
           engines.forEach(function(engine) {
             if (dataSet[engine] == undefined) {
@@ -93,22 +100,33 @@ var KeywordService = {
 
             dataSet[engine].categories.push(formatedDate);
 
+            // seria - contains group name and the positions, index - group index 
             result[engine].series.forEach(function(seria, index) {
+              // No name or data is defined, create the object literal first
               if (dataSet[engine]['series'][index] == undefined) {
-                // No name or data is defined
                 dataSet[engine]['series'][index] = {};
                 dataSet[engine]['series'][index]['name'] = result[engine]['series'][index]['name'];
                 dataSet[engine]['series'][index]['data'] = [];
               }
-              //if ()
+
+              // After it is defined put data into object
               if (dataSet[engine]['series'][index]['name'] == result[engine]['series'][index]['name']) {
-                var sum = _.reduce(result[engine]['series'][index]['data'], function(memo, num) { return memo + num }, 0);
-                dataSet[engine]['series'][index]['data'].push(sum);
+                // Sum the results
+                var sum = _.reduce(result[engine]['series'][index]['data'], function(memo, num) { 
+                  return memo + num 
+                }, 0);
+
+                // Divide by the keyword size and with the matching urls size
+                sum /= job.keywords.length;
+                sum /= job.match[index].urls.length;
+                
+                // Round the sum to integer for easier comparsion
+                dataSet[engine]['series'][index]['data'].push(Math.round(sum));
               }
             });
           });
 
-          cb(null, result);
+          return cb(null, result);
         });  
       }, function(err) {
         // Has gone through all the keywords
@@ -364,6 +382,9 @@ var KeywordService = {
 
   },
 
+  /** 
+   * 
+   */
   groupByMatch: function(jobid, cb) {
     this.totalStats(jobid, function(err, result) {
       if (err) return cb(err);

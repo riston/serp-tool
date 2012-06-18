@@ -2,7 +2,7 @@ script(type='text/javascript')
   var optionsColumn = {
     chart: {
         renderTo: 'job-chart',
-        type: 'column',
+        type: 'bar',
         plotBorderWidth: 1
     },
     title: { },
@@ -15,13 +15,10 @@ script(type='text/javascript')
     },
     xAxis: { },
     legend: {
-        layout: 'vertical',
+        layout: 'horizontal',
         backgroundColor: '#FFFFFF',
-        align: 'left',
-        verticalAlign: 'top',
-        x: 100,
-        y: 70,
-        floating: true,
+        align: 'center',
+        verticalAlign: 'bottom',
         shadow: true
     },
     tooltip: {
@@ -30,7 +27,7 @@ script(type='text/javascript')
         }
     },
     plotOptions: {
-      column: {
+      bar: {
           dataLabels: {
               enabled: true
           },
@@ -44,7 +41,7 @@ script(type='text/javascript')
   var lineChartOptions = {
     chart: {
         renderTo: 'job-chart-line',
-        type: 'column',
+        type: 'bar',
         plotBorderWidth: 1
     },
     title: { },
@@ -57,11 +54,10 @@ script(type='text/javascript')
     },
     xAxis: { },
     legend: {
-        layout: 'vertical',
+        layout: 'horizontal',
         backgroundColor: '#FFFFFF',
         align: 'center',
         verticalAlign: 'bottom',
-        //floating: true,
         shadow: true
     },
     tooltip: {
@@ -70,7 +66,7 @@ script(type='text/javascript')
         }
     },
     plotOptions: {
-      column: {
+      bar: {
           dataLabels: {
               enabled: true
           },
@@ -268,14 +264,15 @@ div.tabbable
 
   div.tab-content
     div.tab-pane.active#total
-      h3 Keywords total line chart
+      h3 Keywords total chart
+      p Total of the keywords position, lower position means better place in search engine results.
       div.row
         br
         div.span3
           h3 Search engine:
           ul.nav.nav-pills.nav-stacked#total-match
         div.span9
-          div(id="job-chart-line")
+          div(id="job-chart-line",class="bar")
 
     div.tab-pane#grouped
       h3 View of overall stats
@@ -289,4 +286,4 @@ div.tabbable
           h3 Matching item:
           ul.nav.nav-pills.nav-stacked#match
         div.span9
-          div(id="job-chart")
+          div(id="job-chart",class="bar")
