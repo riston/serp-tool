@@ -16,21 +16,20 @@ html
             span.icon-bar
             span.icon-bar
             span.icon-bar
-          a(class="brand",href="/") SERP tool
+          a(class="brand",href="/") 
+            b SERP tool
           div.nav-collapse
             ul.nav
               li
-                a(href="/") Home
+                a(href="/")
+                  i.icon-home.icon-white
+                  |  Home
               - if (user)
                 ul.nav
-                  li.dropdown
-                    a(href="#",class="dropdown-toggle",data-toggle="dropdown") Serp 
-                      b.caret
-                    ul.dropdown-menu
-                      li
-                        a(href="/serp") Job list
-                      li 
-                        a(href='/serp/new') New job
+                  li
+                    a(href="/serp/new")
+                      i.icon-ok-circle.icon-white
+                      |  New job
 
             p.navbar-text.pull-right
               - if (user)
@@ -51,5 +50,6 @@ html
     head.js(
       { jquery: '/javascripts/jquery-1.7.2.min.js' },
       '/plugins/bootstrap/js/bootstrap.min.js',
-      { highcharts: '/javascripts/highcharts.js' }
+      { highcharts: '/javascripts/highcharts.js' },
+      { exporting: '/javascripts/highcharts.exporting.js' }
     );    

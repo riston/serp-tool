@@ -30,16 +30,15 @@ form(class="form-horizontal",name="add-job",method="post",action="/serp/add-job"
       div.controls
         input(type="text",name="name",class="span4",value="#{(form.name) ? form.name : ''}")
 
-    div.control-group
-      label.control-label Start date:
-      div.controls
-        input(type="text",name="startDate",class="input span2 auto-kal",value="#{(form.startDate) ? form.startDate : ''}",autocomplete="off")
+    div.row
+      div.control-group.span2
+        label.control-label Start date:
+        div.controls
+          input(type="text",name="startDate",class="input span2 auto-kal",value="#{(form.startDate) ? form.startDate : ''}",autocomplete="off")
 
-    div.control-group
-      label.control-label Time:
-      div.controls
-        input(type="text",name="startTime",class="input span2",value="#{(form.startTime) ? form.startTime : ''}")
-        p.help-block Use time format HH:MM
+      div.control-group.span1
+        div.controls
+          input(type="text",name="startTime",class="input span2",placeholder="HH:MM",value="#{(form.startTime) ? form.startTime : ''}")
 
     div.control-group
       label.control-label Repeat every:
@@ -53,7 +52,7 @@ form(class="form-horizontal",name="add-job",method="post",action="/serp/add-job"
       label.control-label Sources:
       div.controls
         select(class='span2',name='sources',multiple='multiple')
-          enginges = [ 'google', 'neti.ee', 'yahoo', 'duckduckgo']
+          enginges = [ 'google', 'neti.ee']
           for engine in enginges
             option(selected=(form.sources ? form.sources.indexOf(engine) != -1 : false)) #{engine}
 
@@ -66,8 +65,8 @@ form(class="form-horizontal",name="add-job",method="post",action="/serp/add-job"
 
     h3 Group matching
     p.group-text It is useful to group the matching sets, like if the company has many sub domains: 
-      button(class='btn btn-mini btn-info',class='add-group')
-        i.icon-plus-sign
+      button(class='btn btn-mini btn-info add-group')
+        i.icon-plus-sign.icon-white
         |  Add group
       mixin groupForm({})
       

@@ -9,7 +9,7 @@ var KeywordService = {
   keywordResultLimit: 50,
 
   hasMatch: function(string, inString) {
-    return inString.indexOf(string) != -1
+    return inString.toLowerCase().indexOf(string.toLowerCase()) != -1;
   },
 
   addResult: function(keywordId, result, cb) {
@@ -117,11 +117,16 @@ var KeywordService = {
                 }, 0);
 
                 // Divide by the keyword size and with the matching urls size
-                sum /= job.keywords.length;
-                sum /= job.match[index].urls.length;
-                
+                sum = parseFloat(sum / job.keywords.length);
+                sum = parseFloat(sum / job.match[index].urls.length);
+
                 // Round the sum to integer for easier comparsion
-                dataSet[engine]['series'][index]['data'].push(Math.round(sum));
+                var dataObject = {
+                    y: Math.round(sum * 100) / 100
+                  , url: job._id
+                };
+
+                dataSet[engine]['series'][index]['data'].push(dataObject);
               }
             });
           });

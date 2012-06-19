@@ -18,7 +18,7 @@ exports.index = function(req, res) {
       , jobNames: Object.keys(dataJobs)
       , jobs: dataJobs
     });   
-  })
+  });
 };
 
 exports.new = function(req, res) {

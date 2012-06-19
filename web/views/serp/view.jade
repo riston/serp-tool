@@ -1,4 +1,9 @@
 script(type='text/javascript')
+  var exportFilename = function() {
+    var date = new Date().toDateString();
+    return 'serp-tool-' + date.replace(/ /g, '-'); 
+  };
+
   var optionsColumn = {
     chart: {
         renderTo: 'job-chart',
@@ -36,6 +41,9 @@ script(type='text/javascript')
           borderWidth: 0
       }
     },
+    exporting: {
+      filename: exportFilename()
+    }
   };
 
   var lineChartOptions = {
@@ -75,6 +83,9 @@ script(type='text/javascript')
           borderWidth: 0
       }
     },
+    exporting: {
+      filename: exportFilename()
+    }
   };
 
   var optionsGroupd = {
@@ -108,7 +119,10 @@ script(type='text/javascript')
         stacking: 'normal'
       }
     },
-    series: []
+    series: [],
+    exporting: {
+      filename: exportFilename()
+    }
   };
 
   function getOverallStats(jobid, options) {
@@ -259,6 +273,7 @@ script(type='text/javascript')
   });
 
 h1 View of job "#{job.name}"
+h4 Start: #{moment(job.start).format('YYYY-MM-DD HH:mm:ss')} - End: #{moment(job.end).format('YYYY-MM-DD HH:mm:ss')}
 br
 
 div.tabbable
@@ -284,7 +299,7 @@ div.tabbable
 
     div.tab-pane#grouped
       h3 View of overall stats
-      div(class='span12',id="job-total-chart")
+      div(class='span11',id="job-total-chart")
 
     div.tab-pane#match
       h3 Each matched item stats

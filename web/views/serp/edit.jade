@@ -27,16 +27,15 @@ form(class="form-horizontal",name="edit",method="post",action="/serp/edit")
       div.controls
         input(type="text",name="name",class="span4",value="#{job.name}")
 
-    div.control-group
-      label.control-label Start date:
-      div.controls
-        input(type="text",name="startDate",class="input span2 auto-kal",value="#{moment(job.start).format('MM/DD/YYYY')}")
+    div.row
+      div.control-group.span2
+        label.control-label Start date:
+        div.controls
+          input(type="text",name="startDate",class="input span2 auto-kal",value="#{moment(job.start).format('MM/DD/YYYY')}")
 
-    div.control-group
-      label.control-label Time:
-      div.controls
-        input(type="text",name="startTime",class="input span2",value="#{moment(job.start).format('HH:mm')}")
-        p.help-block Use time format HH:MM
+      div.control-group.span1
+        div.controls
+          input(type="text",name="startTime",class="input span2",placeholder="HH:MM",value="#{moment(job.start).format('HH:mm')}")
 
     div.control-group
       label.control-label Status:
@@ -58,7 +57,7 @@ form(class="form-horizontal",name="edit",method="post",action="/serp/edit")
       label.control-label Sources:
       div.controls
         select(class='span2',name='sources',multiple='multiple')
-          enginges = [ 'google', 'neti.ee', 'yahoo', 'duckduckgo']
+          enginges = [ 'google', 'neti.ee' ]
           for engine in enginges
             option(selected=job.sources.indexOf(engine) != -1) #{engine}
 
@@ -72,8 +71,8 @@ form(class="form-horizontal",name="edit",method="post",action="/serp/edit")
 
     h3 Group matching
     p.group-text It is useful to group the matching sets, like if the company has many sub domains: 
-      button(class='btn btn-mini btn-info',class='add-group')
-        i.icon-plus-sign
+      button(class='btn btn-mini btn-info add-group')
+        i.icon-plus-sign.icon-white
         |  Add group
       for match in job.match
         mixin groupForm(match)

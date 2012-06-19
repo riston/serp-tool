@@ -1,7 +1,7 @@
 h1 Viewing overall stats of '#{job.name}'
 
 br
-p View of job with total average stats compared to groups, smaller positioning numbers means better place.
+p View of job with total average stats compared to groups, smaller positioning numbers means better place. 
 
 div#charts
 for engine in job.sources
@@ -11,6 +11,12 @@ for engine in job.sources
 input(type='hidden',name='jobId',id='jobId',value='#{job._id}')
 
 script(type='text/javascript')
+
+  var exportFilename = function() {
+    var date = new Date().toDateString();
+    return 'serp-tool-' + date.replace(/ /g, '-'); 
+  };
+
   var options = {
     chart: {
         renderTo: 'job-chart',
@@ -54,23 +60,19 @@ script(type='text/javascript')
             point: {
                 events: {
                     click: function(e) {
-                        // To get the data which were clicked check the this.catergory
-                        // e.point.category e.point.config, e.point.series.name
-                        var point = {
-                            category: this.category
-                          , y: this.y
-                          , series: this.series.name
-                          , engine: this.series.chart.options.chart.renderTo.replace('chart-', '')
-                          , jobId: $('input#jobId').val()
-                        };
-                        console.log(point);
-                        console.log(this);
+                        // Redirect to specific job
+                        location.href = '/serp/view/' + this.options.url;
+                        console.log(this.options.url);
                     }
-                }     
+                }
             }
         }
     },
+    exporting: {
+      filename: exportFilename()
+    }
   };
+
 
   function getStats(jobid) {
     $.get('/serp/stats/all/' + jobid, function(result) {
@@ -82,7 +84,6 @@ script(type='text/javascript')
                 options.xAxis.categories  = result[engine].categories;
                 options.series            = result[engine].series;
                 options.chart.renderTo    = 'chart-' + engine;
-                console.log(options);
 
                 chart = new Highcharts.Chart(options);
             })(engine, options)
