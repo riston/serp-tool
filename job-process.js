@@ -91,6 +91,16 @@ var JobProcceser = {
 
   listener: function() {
     this.complete();
+  },
+
+  init: function() {
+    var self = this;
+    // Check database condition
+    DB.util.ping(function(err, result) {
+      if (!err) {
+        self.process();
+      }
+    });
   }
 
 }

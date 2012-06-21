@@ -157,6 +157,7 @@ var KeywordService = {
                 //results = keyword.results.slice(0, self.keywordResultLimit);
                 results = keyword.results;
                 var findResult = _.find(results, function(result) {
+                  if (result === null || !result.hasOwnProperty('href')) return false;
                   return self.hasMatch(url, result.href);
                 });
 
@@ -166,9 +167,9 @@ var KeywordService = {
                   group:      group.name,
                   match:      url,
                   date:       job.start,
-                  title:      findResult == undefined ? '' : findResult.title,
-                  url:        findResult == undefined ? '' : findResult.href, 
-                  position:   findResult == undefined ? self.keywordResultLimit : findResult.index
+                  title:      findResult === undefined ? '' : findResult.title,
+                  url:        findResult === undefined ? '' : findResult.href, 
+                  position:   findResult === undefined ? self.keywordResultLimit : findResult.index
                 };
                 dataSet.push(keywordData);  
               });

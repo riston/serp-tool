@@ -11,7 +11,7 @@ var cronRunTime = '*/10 * * * *'
 try {
 
   var newInterval = new cron.CronJob(cronRunTime, function() {
-    JobCreator.addNew();
+    JobCreator.init();
   }, null, true);
 
   var failedJobInterval = new cron.CronJob(jobFailCheckTime, function() {
@@ -44,7 +44,17 @@ var JobCreator = {
         console.log('Error found: ', err);
       }
     });    
+  },
+
+  init: function() {
+    var self = this;
+    DB.util.ping(function(err, result) {
+      if (!err) {
+        self.addNew();
+      }
+    });
   }
+
 };
 
 var JobFail = {
