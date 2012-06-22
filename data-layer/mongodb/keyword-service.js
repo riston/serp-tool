@@ -82,7 +82,7 @@ var KeywordService = {
       if (err) return cb(err);
       
       async.forEach(jobs, function(job, cb) {
-        self.getGroupTotals(job._id.toString(), function(err, result) {
+        self.getGroupTotals(job._id.toString(), 'sum', function(err, result) {
 
           // Get the search engines
           var engines = Object.keys(result);
@@ -198,7 +198,7 @@ var KeywordService = {
     });
   },
 
-  getGroupTotals: function(jobid, cb) {
+  getGroupTotals: function(jobid, method, cb) {
     var self = this;
     self.groupStats(jobid, function(err, results) {
       self.getJobKeywords(jobid, function(err, keywords) {
@@ -226,9 +226,26 @@ var KeywordService = {
               });
               filterByKeywords = _.pluck(filterByKeywords, 'position');
 
-              var result = _.reduce(filterByKeywords, function(memo, result) {
-                return memo + parseInt(result, 10);
-              }, 0);
+              var result = {
+                'sum': function() {
+                  return _.reduce(filterByKeywords, function(memo, result) {
+                    return memo + parseInt(result, 10);
+                  }, 0);
+                },
+                'min': function() {
+                  return _.min(filterByKeywords);
+                },
+                'avg': function() {
+                  var keywordLength = filterByKeywords.length;
+                  return Math.round((this.sum() / keywordLength) * 100) / 100;
+                }
+              }[method]();
+
+              // var result = _.reduce(filterByKeywords, function(memo, result) {
+              //   return memo + parseInt(result, 10);
+              // }, 0);
+
+
               item.data.push(result);
             });
             newDataSet[engine].series.push(item);

@@ -1,4 +1,5 @@
-var db = require(__dirname + '/../database.js');
+var db = require(__dirname + '/../database.js')
+  , _ = require('underscore');
 
 exports.checkJobId = function(req, res, next, id) {
   if (id.length != 24) throw next(new Error('The job id is not having correct length'));
@@ -73,7 +74,12 @@ exports.doDeleteAll = function(req, res) {
 };
 
 exports.jobLineStats = function(req, res) {
-  db.keyword.getGroupTotals(req.params.jobid, function(err, stats) {
+  var method = req.params.method;
+    
+  if (method !== 'min' && method !== 'sum' && method !== 'avg') {
+    method = 'sum';
+  }
+  db.keyword.getGroupTotals(req.params.jobid, method, function(err, stats) {
     res.json((err) ? { code: 400, err: 'Check again the data', } : stats);
   });
 };
@@ -119,16 +125,31 @@ exports.edit = function(req, res) {
 };
 
 exports.doEdit = function(req, res) {
+  assertJobEditing(req);
+  jobEditingErrors = req.validationErrors(true);
+
+  if (jobEditingErrors) {
+    // There are validation errors
+    var form = {
+        startDate:  req.body.startDate
+      , startTime:  req.body.startTime
+      , repeat:     req.body.repeat
+    };
+
+    req.flash('error', 'There were problems on form check again!');
+    res.render('serp/edit.jade', {
+        title: 'Edit job'
+      , form: form
+    });
+    return;
+  }
+
   var time = new Date(req.body.startDate);
   time.setMinutes(req.body.startTime.split(':')[1]);
   time.setHours(req.body.startTime.split(':')[0]);
 
   var editJob = {
-      name:     req.body.name
-    , start:    time
-    , keywords: req.body.keywords.split(',')
-    , status:   req.body.status
-    , sources:  req.body.sources
+      start:    time
     , repeat:   req.body.repeat
     , match:    []
   };
@@ -161,7 +182,6 @@ exports.addJob = function(req, res) {
   jobAddingErrors = req.validationErrors(true);
   if (jobAddingErrors) {
     // There are validation errors
-    console.log(req.body);
     var form = {
         name:       req.body.name
       , startDate:  req.body.startDate
@@ -226,7 +246,6 @@ exports.addJob = function(req, res) {
 };
 
 var assertJobAdding = function(req) {
-
   // Format check 01/23/2012
   req.assert('startDate', 'Check the job start date again!').is(/^\d{2}\/\d{2}\/\d{4}$/);
   // Format time HH:MM
@@ -234,6 +253,19 @@ var assertJobAdding = function(req) {
   req.assert('repeat', 'Select repeat frequency from select box').isIn(['day', 'week', 'month']);
 
   var fields = ['name', 'startDate', 'startTime', 'repeat', 'keywords'];
+  fields.forEach(function(field) {
+    req.assert(field, 'The field ' + field + ' should not be empty!').notEmpty();
+  });
+};
+
+var assertJobEditing = function(req) {
+  // Format check 01/23/2012
+  req.assert('startDate', 'Check the job start date again!').is(/^\d{2}\/\d{2}\/\d{4}$/);
+  // Format time HH:MM
+  req.assert('startTime', 'Use the time format HH:MM').is(/^[1-2][0-9]:[0-5][0-9]$/);
+  req.assert('repeat', 'Select repeat frequency from select box').isIn(['day', 'week', 'month']);
+
+  var fields = [ 'startDate', 'startTime', 'repeat' ];
   fields.forEach(function(field) {
     req.assert(field, 'The field ' + field + ' should not be empty!').notEmpty();
   });

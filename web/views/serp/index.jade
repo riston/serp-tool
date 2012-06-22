@@ -52,10 +52,11 @@ mixin showTable(jobName)
           a(href="/serp/delete/#{job._id}",title='Delete')
             i.icon-trash
           &nbsp;
-          a(href="/serp/edit/#{job._id}",title='Edit')
-            i.icon-pencil
-          &nbsp;
-          if job.status == 'finished'
+          if job.status == 'waiting'
+            a(href="/serp/edit/#{job._id}",title='Edit')
+              i.icon-pencil
+            &nbsp;
+          if job.status === 'finished'
             a(href="/serp/view/#{job._id}",title='View')
               i.icon-eye-open
 

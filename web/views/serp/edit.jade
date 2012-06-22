@@ -25,7 +25,7 @@ form(class="form-horizontal",name="edit",method="post",action="/serp/edit")
     div.control-group
       label.control-label Job name:
       div.controls
-        input(type="text",name="name",class="span4",value="#{job.name}")
+        input(type="text",name="name",class="span4",value="#{job.name}",disabled="disabled")
 
     div.row
       div.control-group.span2
@@ -40,7 +40,7 @@ form(class="form-horizontal",name="edit",method="post",action="/serp/edit")
     div.control-group
       label.control-label Status:
       div.controls
-        select(class='span2',name='status')
+        select(class='span2',name='status',disabled="disabled")
           status = [ 'finished', 'waiting' ]
           for item in status
             option(selected=job.status == item) #{item}
@@ -56,7 +56,7 @@ form(class="form-horizontal",name="edit",method="post",action="/serp/edit")
     div.control-group
       label.control-label Sources:
       div.controls
-        select(class='span2',name='sources',multiple='multiple')
+        select(class='span2',name='sources',multiple='multiple',disabled="disabled")
           enginges = [ 'google', 'neti.ee' ]
           for engine in enginges
             option(selected=job.sources.indexOf(engine) != -1) #{engine}
@@ -66,7 +66,7 @@ form(class="form-horizontal",name="edit",method="post",action="/serp/edit")
     div.control-group
       label.control-label Keywords:
       div.controls
-        textarea(class='span4',rows='4',name='keywords')
+        textarea(class='span4',rows='4',name='keywords',disabled="disabled")
           #{job.keywords.join(',')}
 
     h3 Group matching

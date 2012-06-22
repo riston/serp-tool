@@ -149,7 +149,9 @@ script(type='text/javascript')
   };
 
   ListItemSelect.prototype = {
-    options: {},
+    options: {
+      urlEnd: ''
+    },
     self: this,
 
     renderList: function(items) {
@@ -187,6 +189,7 @@ script(type='text/javascript')
         $(this).addClass('active');
         
         var select = $(this).find('a').text();
+        self.selected = select;
         self.loadChartWihtoutSidebar(select);
       });
     },
@@ -204,15 +207,18 @@ script(type='text/javascript')
         self.renderList(itemNames);
         self.addListItemClickListener();
       });
-
-
     },
 
     loadData: function(cb) {
       var self = this;
-      $.get(this.options.url, function(result) {
+      if (this.options.urlEnd === undefined) this.options.urlEnd = '';
+      $.get(this.options.url + this.options.urlEnd, function(result) {
         return cb(null, result);
       });
+    },
+
+    addToURL: function(url) {
+      this.options.urlEnd = url;
     },
 
     init: function(options, loadItemData) {
@@ -224,9 +230,11 @@ script(type='text/javascript')
   };
 
   head.ready(function() {
+    // Scripts are loaded
     var totalChartOptions = {
         chartOptions: lineChartOptions
       , url: '/serp/stats/line/#{job._id}'
+      , urlEnd: '/method/sum'
       , list: $('#total-match')
     };
 
@@ -239,7 +247,16 @@ script(type='text/javascript')
     var totalChartSelect = new ListItemSelect()
       , matchChartSelect = new ListItemSelect();
 
+    
     totalChartSelect.init(totalChartOptions, true);
+
+    $('#method').change(function(e) {
+      var value = $(this).val();
+      console.log($(this).val());
+
+      totalChartSelect.addToURL('/method/' + value);
+      totalChartSelect.loadChartWihtoutSidebar(totalChartSelect.selected);
+    });
 
     // Load data only when the tab is selected
     $('a[data-toggle="tab"]').on('shown', function(e) {
@@ -256,8 +273,9 @@ script(type='text/javascript')
         break;
 
         case '#grouped':
-          if (!isChartLoaded(optionsGroupd.chart.renderTo))
+          if (!isChartLoaded(optionsGroupd.chart.renderTo)) {
             getOverallStats('#{job._id}', optionsGroupd);
+          }
         break;
 
         case '#match':
@@ -267,7 +285,6 @@ script(type='text/javascript')
         break;
 
         default:
-
       }
     });
   });
@@ -286,6 +303,7 @@ div.tabbable
       a(href='#match',data-toggle='tab') Matched stats
 
   div.tab-content
+
     div.tab-pane.active#total
       h3 Keywords total chart
       p Total of the keywords position, lower position means better place in search engine results.
@@ -294,6 +312,13 @@ div.tabbable
         div.span3
           h3 Search engine:
           ul.nav.nav-pills.nav-stacked#total-match
+
+          h3 Show method:
+          select(name='method',id='method')
+            option(value='sum') SUM (Group total)
+            option(value='min') MIN (Group best position)
+            option(value='avg') AVG (Average position in group)
+
         div.span9
           div(id="job-chart-line",class="bar")
 
