@@ -189,6 +189,16 @@ var JobService = {
 
   },
 
+  /**
+   * Multi update to change all the jobs with same names matching elements.
+   */ 
+  updateJobMatch: function(jobName, newMatch, cb) {
+    job.update({ name: jobName }, { $set: { match: newMatch } }, { multi: true }, function(err) {
+      if (err) return cb(err);
+      else return cb(null);
+    });
+  },
+
   updateJobStatus: function(id, newStatus, cb) {
     job.update({ _id: id }, { $set: { status: newStatus } }, function(err, job) {
       if (err) return cb(err);

@@ -141,6 +141,7 @@ exports.doEdit = function(req, res) {
         title: 'Edit job'
       , form: form
     });
+
     return;
   }
 
@@ -168,11 +169,18 @@ exports.doEdit = function(req, res) {
     editJob.match.push(matchGroup);
   });
 
-  db.job.update(req.body.jobId, editJob, function(err) {
-    if (!err) req.flash('success', 'Edit successfully!');
-    else req.flash('error', 'There were problems editing job!');
-    res.redirect('/serp');
-  });
+  var strId = req.body.jobId;
+
+  db.job.findOne(strId, function(err, job) {
+    db.job.update(strId, editJob, function(errUp) {
+      db.job.updateJobMatch(job.name, editJob.match, function(errMatch) {
+        if (!errUp && !errMatch) req.flash('success', 'Edit successfully!');
+        else req.flash('error', 'There were problems editing job!');
+        res.redirect('/serp');
+      });
+    });
+  })
+  
 };
 
 // POST job
