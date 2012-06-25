@@ -234,7 +234,7 @@ script(type='text/javascript')
     var totalChartOptions = {
         chartOptions: lineChartOptions
       , url: '/serp/stats/line/#{job._id}'
-      , urlEnd: '/method/sum'
+      , urlEnd: '/method/min'
       , list: $('#total-match')
     };
 
@@ -315,8 +315,8 @@ div.tabbable
 
           h3 Show method:
           select(name='method',id='method')
-            option(value='sum') SUM (Group total)
             option(value='min') MIN (Group best position)
+            option(value='sum') SUM (Group total)
             option(value='avg') AVG (Average position in group)
 
         div.span9

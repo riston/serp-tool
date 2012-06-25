@@ -14,7 +14,8 @@ mixin showStatus(status)
   - else if (status == 'queued')
     span.label.label-info
       i.icon-repeat
-      &nbsp; #{status}    
+      &nbsp; #{status}
+
   - else 
     #{status}
 
@@ -52,6 +53,10 @@ mixin showTable(jobName)
           a(href="/serp/delete/#{job._id}",title='Delete')
             i.icon-trash
           &nbsp;
+          if (moment().subtract('days', 10) <= job.added)
+            a(href="/serp/restart/#{job._id}",title='Restart')
+              i.icon-refresh
+            &nbsp;
           if job.status == 'waiting'
             a(href="/serp/edit/#{job._id}",title='Edit')
               i.icon-pencil

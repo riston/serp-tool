@@ -204,6 +204,25 @@ var JobService = {
       if (err) return cb(err);
       else return cb(null, job)
     });
+  },
+
+  /**
+   * Restart the current job, change the status to waiting and delete related keywords.
+   */
+  restart: function(strJobId, cb) {
+    var id = db.ObjectID.createFromHexString(strJobId)
+      , self = this;
+
+    db.collection('keyword').remove({ job: id }, function(err) {
+      if (!err) {
+        self.updateJobStatus(id, 'waiting', function(err) {
+          if (!err) return cb(null);
+          else return cb(err);
+        });
+      } else {
+        return cb(err);
+      }
+    });
   }
 };
 

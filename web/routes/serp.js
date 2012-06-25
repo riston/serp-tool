@@ -77,7 +77,7 @@ exports.jobLineStats = function(req, res) {
   var method = req.params.method;
     
   if (method !== 'min' && method !== 'sum' && method !== 'avg') {
-    method = 'sum';
+    method = 'min';
   }
   db.keyword.getGroupTotals(req.params.jobid, method, function(err, stats) {
     res.json((err) ? { code: 400, err: 'Check again the data', } : stats);
@@ -102,6 +102,14 @@ exports.jobAllStats = function(req, res) {
   db.keyword.findSubResults(req.params.jobid, function(err, stats) {
     if (err) res.json({ code: 400, err: 'Check again the data', });
     else res.json(stats);
+  });
+};
+
+exports.jobRestart = function(req, res) {
+  db.job.restart(req.params.jobid, function(err) {
+    if (!err) req.flash('success', 'Restarting job succeed!');
+    else req.flash('error', 'Job restarting failed try again!');
+    res.redirect('/serp');
   });
 };
 

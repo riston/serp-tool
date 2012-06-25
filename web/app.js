@@ -66,6 +66,7 @@ app.get('/serp/delete/:jobid', routes.isUser, routes.serp.delete);
 app.get('/serp/edit/:jobid', routes.isUser, routes.serp.edit);
 app.get('/serp/view/:jobid', routes.isUser, routes.serp.view);
 app.get('/serp/job-overall/:jobid', routes.isUser, routes.serp.jobOverall);
+app.get('/serp/restart/:jobid', routes.isUser, routes.serp.jobRestart);
 
 app.get('/serp/stats/:jobid', routes.isUser, routes.serp.jobStats);
 app.get('/serp/stats/overall/:jobid', routes.isUser, routes.serp.jobOverallStats);
