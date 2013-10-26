@@ -1,4 +1,4 @@
-Serp-tool
+Serp-tool [![Rstats](http://rstats.herokuapp.com/stats/badge/serp-tool)](http://rstats.herokuapp.com/stats/badge/serp-tool/)
 =========
 
 Track the web sites positions in time.
